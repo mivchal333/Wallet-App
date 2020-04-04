@@ -21,6 +21,18 @@ class Family(models.Model):
     userList = models.ManyToManyField(AppUser)
 
 
+class Wallet(models.Model):
+    name = models.CharField(max_length=20)
+    amount = models.FloatField()
+    createdAt = models.DateTimeField(auto_now_add=True)
+    updatedAt = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
+    family = models.ForeignKey(Family, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
 class Expense(models.Model):
     name = models.CharField(max_length=20)
     amount = models.FloatField()
@@ -50,13 +62,4 @@ class Income(models.Model):
         return self.name
 
 
-class Wallet(models.Model):
-    name = models.CharField(max_length=20)
-    amount = models.FloatField()
-    createdAt = models.DateTimeField(auto_now_add=True)
-    updatedAt = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
-    family = models.ForeignKey(Family, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.name
