@@ -9,6 +9,27 @@
     <h3>Wallet name: {{ wallet.name }}</h3>
     <h4>Actual amount: {{ wallet.amount }}</h4>
     <h5>Creator: {{ wallet.user }}</h5>
+
+    <br/>
+    <div class="last-incomes">
+        {% if lastIncomes %}
+            <ul>
+                {% for income in lastIncomes %}
+                    <li><a href="/wallet/income/{{ income.id }}/">{{ income.source }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+    <div class="last-expenses">
+        {% if lastExpenses %}
+            <ul>
+                {% for expense in lastExpenses %}
+                    <li><a href="/wallet/expense/{{ expense.id }}/">{{ expense.name }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
 {% else %}
     <p>Wallet is not available</p>
 {% endif %}

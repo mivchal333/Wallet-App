@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.template import loader
-from .models import Wallet
+from django.http import Http404
+
+from .models import Wallet, Income, Expense
 
 
 def index(request):
@@ -9,8 +10,16 @@ def index(request):
 
 
 def walletDetails(request, wallet_id):
-    wallet = Wallet.objects.get(pk=wallet_id)
+    try:
+        wallet = Wallet.objects.get(pk=wallet_id)
+    except Wallet.DoesNotExist:
+        raise Http404("Wallet does not exist")
+    lastIncomes = Income.objects.order_by('-createdAt')[:5]
+    lastExpenses = Expense.objects.order_by('-createdAt')[:5]
+
     context = {
         'wallet': wallet,
+        'lastIncomes': lastIncomes,
+        'lastExpenses': lastExpenses
     }
     return render(request, 'wallet/walletDetails.html', context)
