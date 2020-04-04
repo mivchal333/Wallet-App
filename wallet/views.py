@@ -23,3 +23,12 @@ def walletDetails(request, wallet_id):
         'lastExpenses': lastExpenses
     }
     return render(request, 'wallet/walletDetails.html', context)
+
+
+def incomeDetails(request, income_id):
+    try:
+        income = Income.objects.get(pk=income_id)
+    except Income.DoesNotExist:
+        raise Http404("Income does not exist")
+    context = {'income': income}
+    return render(request, 'wallet/incomeDetails.html', context)
