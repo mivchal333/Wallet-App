@@ -54,8 +54,8 @@ class Income(models.Model):
     updatedAt = models.DateTimeField(auto_now_add=True)
     executionDate = models.DateTimeField(blank=True, null=True)
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
-    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    user = models.ForeignKey(AppUser, models.SET_NULL, null=True, blank=True)
+    category = models.ForeignKey(Category, models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.source
