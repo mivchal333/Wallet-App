@@ -9,7 +9,7 @@ from .models import Wallet, Income, Expense, Category
 
 
 def index(request):
-    return HttpResponse("Hello world from wallet app!")
+    return render(request, 'wallet/index.html', {})
 
 
 def walletDetails(request, wallet_id):
@@ -48,6 +48,7 @@ def addWallet(request):
             amount = form.cleaned_data['amount']
             newWallet = Wallet(name=name, amount=amount)
             newWallet.save()
+            request.user.wallets.add(newWallet)
 
             return HttpResponseRedirect('/wallet/' + str(newWallet.id))
 
