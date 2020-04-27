@@ -2,10 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class AppUser(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-
 class Category(models.Model):
     name = models.CharField(max_length=20, default='')
     priority = models.IntegerField()
@@ -17,7 +13,7 @@ class Category(models.Model):
 
 class Family(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True)
-    userList = models.ManyToManyField(AppUser)
+    userList = models.ManyToManyField(User)
 
 
 class Wallet(models.Model):
@@ -25,7 +21,7 @@ class Wallet(models.Model):
     amount = models.FloatField(default='0')
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(AppUser, models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(User, models.SET_NULL, related_name='wallets', null=True, blank=True)
     family = models.ForeignKey(Family, models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
@@ -39,7 +35,7 @@ class Expense(models.Model):
     updatedAt = models.DateTimeField(auto_now_add=True)
     executionDate = models.DateTimeField(blank=True, null=True)
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
-    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     done = models.BooleanField()
 
@@ -54,7 +50,7 @@ class Income(models.Model):
     updatedAt = models.DateTimeField(auto_now_add=True)
     executionDate = models.DateTimeField(blank=True, null=True)
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
-    user = models.ForeignKey(AppUser, models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(User, models.SET_NULL, null=True, blank=True)
     category = models.ForeignKey(Category, models.SET_NULL, null=True, blank=True)
 
     def __str__(self):

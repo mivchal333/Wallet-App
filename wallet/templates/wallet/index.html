@@ -4,7 +4,18 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+
 <body>
 
+{% if user.is_authenticated %}
+
+    {% block content %}
+        {% for wallet in user.wallets.all %}
+            <p><a href="/wallet/{{ wallet.id }}">{{ wallet.name }}</a></p>
+        {% endfor %}
+    {% endblock %}
+{% else %}
+    <a href='/login'>You are not logged in, please login to see your wallets</a>
+{% endif %}
 </body>
 </html>
