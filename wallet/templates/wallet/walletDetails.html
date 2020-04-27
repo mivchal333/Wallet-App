@@ -3,35 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <title>Wallet Details Page</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-{% if wallet %}
-    <h3>Wallet name: {{ wallet.name }}</h3>
-    <h4>Actual amount: {{ wallet.amount }}</h4>
-    <h5>Creator: {{ wallet.user }}</h5>
+<nav class="navbar navbar-expand-sm bg-">
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" href="/wallet">Main page</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/wallet/add">Add wallet</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Link 3</a>
+    </li>
+  </ul>
+</nav>
+<div class="container">
 
-    <br/>
-    <div class="last-incomes">
-        {% if lastIncomes %}
-            <ul>
-                {% for income in lastIncomes %}
-                    <li><a href="/wallet/income/{{ income.id }}/">{{ income.source }}</a></li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
-    <div class="last-expenses">
-        {% if lastExpenses %}
-            <ul>
-                {% for expense in lastExpenses %}
-                    <li><a href="/wallet/expense/{{ expense.id }}/">{{ expense.name }}</a></li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
+    {% if wallet %}
+        <h3>Wallet: {{ wallet.name }}</h3>
+        <h4>Actual amount: {{ wallet.amount }}</h4>
+        <h5>Creator: {{ wallet.user }}</h5>
 
-{% else %}
-    <p>Wallet is not available</p>
-{% endif %}
+        <br/>
+        <div class="last-incomes ">
+            {% if lastIncomes %}
+                <h4>Last incomes:</h4>
+                <ul class="list-group">
+                    {% for income in lastIncomes %}
+                        <li class="list-group-item list-group-item-action"><a
+                                href="/wallet/income/{{ income.id }}/">{{ income.source }}</a> - {{ income.amount }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        <a class="btn btn-primary" href="/wallet/{{ wallet.id }}/income/add">Add income</a>
+        <br/>
+        <div class="last-expenses">
+            {% if lastExpenses %}
+                <h4>Last expanses:</h4>
+                <ul class="list-group">
+                    {% for expense in lastExpenses %}
+                        <li class="list-group-item list-group-item-action"><a
+                                href="/wallet/expense/{{ expense.id }}/">{{ expense.name }}</a> - {{ expense.amount }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        </div>
+
+    {% else %}
+        <p>Wallet is not available</p>
+    {% endif %}
+
+
 </body>
 </html>

@@ -25,8 +25,8 @@ class Wallet(models.Model):
     amount = models.FloatField(default='0')
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
-    family = models.ForeignKey(Family, on_delete=models.CASCADE)
+    user = models.ForeignKey(AppUser, models.SET_NULL, null=True, blank=True)
+    family = models.ForeignKey(Family, models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -54,9 +54,8 @@ class Income(models.Model):
     updatedAt = models.DateTimeField(auto_now_add=True)
     executionDate = models.DateTimeField(blank=True, null=True)
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
-    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    user = models.ForeignKey(AppUser, models.SET_NULL, null=True, blank=True)
+    category = models.ForeignKey(Category, models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.source
-
