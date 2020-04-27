@@ -11,18 +11,12 @@ class Category(models.Model):
         return self.name
 
 
-class Family(models.Model):
-    createdAt = models.DateTimeField(auto_now_add=True)
-    userList = models.ManyToManyField(User)
-
-
 class Wallet(models.Model):
     name = models.CharField(max_length=20)
     amount = models.FloatField(default='0')
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, models.SET_NULL, related_name='wallets', null=True, blank=True)
-    family = models.ForeignKey(Family, models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
