@@ -1,12 +1,38 @@
 {% extends "wallet/base.html" %}
 {% block content %}
-    <h3>{{ income.source }}</h3>
-    <h4> {{ income.amount }}</h4>
-    <h4> {{ income.createdAt }}</h4>
-    <h4> {{ income.executionDate }}</h4>
-    <h4> {{ income.wallet }}</h4>
+    <div class="income-details-body">
+        <h3>Income details</h3>
+        <div class="form-group">
+            <label class="details-field-name">Source:</label>
+            <p class="details-field-value"> {{ income.source }}</p>
+        </div>
+        <div class="form-group">
+            <label class="details-field-name">Amount:</label>
+            <p class="details-field-value"> {{ income.amount }}</p>
+        </div>
+        <div class="form-group">
+            <label class="details-field-name">Created at:</label>
+            <p class="details-field-value"> {{ income.createdAt }}</p>
+        </div>
+        <div class="form-group">
+            <label class="details-field-name">Execution date:</label>
+            <p class="details-field-value"> {{ income.executionDate }}</p>
+        </div>
+        <div class="form-group">
+            <label class="details-field-name">Wallet name:</label>
+            <a class="details-field-value" href="/wallet/{{ income.wallet.id }}">  {{ income.wallet.name }}</a>
+        </div>
+        <div class="form-group">
+            <label class="details-field-name">Category:</label>
+            <p class="details-field-value"> {{ income.category.name }}</p>
+        </div>
+        <div class="form-group">
+            <label class="details-field-name">Created by:</label>
+            <p class="details-field-value"> {{ income.user }}</p>
+        </div>
 
-    <a type="button" class="btn btn-primary" href="/wallet/{{ income.wallet.id }}">Go to Wallet</a>
-    <a type="button" class="btn btn-secondary" href="/wallet/income">Go to Incomes</a>
+        <a type="button" class="btn btn-primary" href="/wallet/{{ income.wallet.id }}">Go to Wallet</a>
+        <a type="button" class="btn btn-secondary" href="/wallet/income">Go to Incomes</a>
 
+    </div>
 {% endblock content %}

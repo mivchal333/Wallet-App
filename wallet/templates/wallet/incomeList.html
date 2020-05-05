@@ -1,0 +1,18 @@
+{% extends "wallet/base.html" %}
+{% block content %}
+    <h3>Here you can see your incomes</h3>
+    <div class="list-group income-list-wrapper">
+        {% for income in incomeList %}
+            <div class="card income-card">
+                <h4 class="card-header">{{ income.source }} <b class="income-amount">{{ income.amount }}</b></h4>
+                <div class="card-body">
+                    <p>Category: <b>{{ income.category.name }}</b></p>
+                    <p>Created at: <b>{{ income.createdAt }}</b></p>
+                    <p>Wallet: <b>{{ income.wallet.name }}</b></p>
+                    <a href="/wallet/income/{{ income.id }}" class="btn-sm btn-primary">See details</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <br/>
+{% endblock content %}

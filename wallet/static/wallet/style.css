@@ -2,10 +2,41 @@
     margin-top: 30px;
 }
 
-.wallet-list-wrapper {
+.wallet-list-wrapper, .income-list-wrapper {
     max-width: 50%;
 }
 
 .wallet-add-wrapper input {
     max-width: 300px;
+}
+
+.income-amount {
+    float: right;
+    color: green;
+}
+
+.income-card {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.income-details-body {
+    width: 60%;
+}
+
+.income-details-body .details-field-name {
+    margin-right: 40px;
+}
+
+.income-details-body .details-field-value {
+    float: right;
+}
+
+.income-details-body .details-field-value {
+    font-size: large;
+}
+
+.last-incomes .add-action-right-btn, .last-expenses .add-action-right-btn {
+    display: inline-block;
+    float: right;
 }

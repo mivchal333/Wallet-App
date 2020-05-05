@@ -7,8 +7,12 @@
 
         <br/>
         <div class="last-incomes ">
+            <h4>Last incomes:
+                <a class="btn-sm btn-primary add-action-right-btn" href="/wallet/{{ wallet.id }}/income/add">
+                    Add income
+                </a>
+            </h4>
             {% if lastIncomes %}
-                <h4>Last incomes:</h4>
                 <ul class="list-group">
                     {% for income in lastIncomes %}
                         <li class="list-group-item list-group-item-action"><a
@@ -18,11 +22,14 @@
                 </ul>
             {% endif %}
         </div>
-        <a class="btn btn-primary" href="/wallet/{{ wallet.id }}/income/add">Add income</a>
         <br/>
         <div class="last-expenses">
+            <h4>Last expanses:
+                <a class="btn-sm btn-primary add-action-right-btn" href="/wallet/{{ wallet.id }}/expense/add">
+                    Add expense
+                </a>
+            </h4>
             {% if lastExpenses %}
-                <h4>Last expanses:</h4>
                 <ul class="list-group">
                     {% for expense in lastExpenses %}
                         <li class="list-group-item list-group-item-action"><a

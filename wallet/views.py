@@ -1,6 +1,6 @@
 from django.http import Http404
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from .forms import AddIncomeForm
 from .forms import AddWalletForm
@@ -60,6 +60,7 @@ def addWallet(request):
 
 def incomeAdd(request, wallet_id):
     # if this is a POST request we need to process the form data
+    wallet = Wallet.objects.get(pk=wallet_id)
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = AddIncomeForm(request.POST)
@@ -80,13 +81,28 @@ def incomeAdd(request, wallet_id):
     else:
         form = AddIncomeForm()
 
-    return render(request, 'wallet/incomeAdd.html', {'form': form, 'wallet_id': wallet_id})
+    return render(request, 'wallet/incomeAdd.html', {'form': form, 'wallet_id': wallet_id, 'wallet': wallet})
 
 
 def walletList(request):
-    walletList = Wallet.objects.filter(user=request.user)
+    if request.user.is_authenticated:
+        walletList = Wallet.objects.filter(user=request.user)
 
-    context = {
-        'walletList': walletList,
-    }
-    return render(request, 'wallet/walletList.html', context)
+        context = {
+            'walletList': walletList,
+        }
+        return render(request, 'wallet/walletList.html', context)
+    else:
+        return redirect("/login")
+
+
+def incomeList(request):
+    if request.user.is_authenticated:
+        incomeList = Income.objects.filter(user=request.user)
+
+        context = {
+            'incomeList': incomeList,
+        }
+        return render(request, 'wallet/incomeList.html', context)
+    else:
+        return redirect("/login")

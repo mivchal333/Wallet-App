@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+
 from .forms import RegisterForm
 
 
@@ -7,7 +8,7 @@ def register(response):
         form = RegisterForm(response.POST)
         if form.is_valid():
             form.save()
-            return redirect("/wallet")
+            return redirect("/wallet/home")
     else:
         form = RegisterForm()
 
