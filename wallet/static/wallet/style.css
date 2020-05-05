@@ -1,0 +1,11 @@
+.container {
+    margin-top: 30px;
+}
+
+.wallet-list-wrapper {
+    max-width: 50%;
+}
+
+.wallet-add-wrapper input {
+    max-width: 300px;
+}

@@ -1,15 +1,14 @@
-from django.shortcuts import render
-from django.http import HttpResponse
 from django.http import Http404
 from django.http import HttpResponseRedirect
-from .forms import AddWalletForm
+from django.shortcuts import render
+
 from .forms import AddIncomeForm
+from .forms import AddWalletForm
+from .models import Wallet, Income, Expense
 
-from .models import Wallet, Income, Expense, Category
 
-
-def index(request):
-    return render(request, 'wallet/index.html', {})
+def home(request):
+    return render(request, 'wallet/home.html', {})
 
 
 def walletDetails(request, wallet_id):
@@ -82,3 +81,12 @@ def incomeAdd(request, wallet_id):
         form = AddIncomeForm()
 
     return render(request, 'wallet/incomeAdd.html', {'form': form, 'wallet_id': wallet_id})
+
+
+def walletList(request):
+    walletList = Wallet.objects.filter(user=request.user)
+
+    context = {
+        'walletList': walletList,
+    }
+    return render(request, 'wallet/walletList.html', context)

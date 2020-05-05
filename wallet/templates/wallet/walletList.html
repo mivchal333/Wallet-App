@@ -1,0 +1,12 @@
+{% extends "wallet/base.html" %}
+{% block content %}
+    <h3>Here you can see your wallets</h3>
+    <div class="list-group wallet-list-wrapper">
+        {% for wallet in walletList %}
+            <a href="/wallet/{{ wallet.id }}" class="list-group-item list-group-item-action">{{ wallet.name }}</a>
+        {% endfor %}
+    </div>
+    <br/>
+    <a href="/wallet/add" class="btn btn-primary active" role="button" aria-pressed="true">Add wallet</a>
+
+{% endblock content %}

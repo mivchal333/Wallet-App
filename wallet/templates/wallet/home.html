@@ -1,9 +1,8 @@
 {% extends "wallet/base.html" %}
 {% block content %}
     {% if user.is_authenticated %}
-        {% for wallet in user.wallets.all %}
-            <p><a href="/wallet/{{ wallet.id }}">{{ wallet.name }}</a></p>
-        {% endfor %}
+        <h1 id="hello1">Hello {{ user.get_username }}</h1>
+        <h2>What you want to do today?</h2>
     {% else %}
         <a href='/login'>You are not logged in, please login to see your wallets</a>
     {% endif %}
