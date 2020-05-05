@@ -1,21 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-
-<body>
-
-{% if user.is_authenticated %}
-
-    {% block content %}
+{% extends "wallet/base.html" %}
+{% block content %}
+    {% if user.is_authenticated %}
         {% for wallet in user.wallets.all %}
             <p><a href="/wallet/{{ wallet.id }}">{{ wallet.name }}</a></p>
         {% endfor %}
-    {% endblock %}
-{% else %}
-    <a href='/login'>You are not logged in, please login to see your wallets</a>
-{% endif %}
-</body>
-</html>
+    {% else %}
+        <a href='/login'>You are not logged in, please login to see your wallets</a>
+    {% endif %}
+{% endblock content %}
