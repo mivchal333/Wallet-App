@@ -3,3 +3,5 @@ py manage.py runserver
 python manage.py migrate
 
 manage.py makemigrations
+
+python manage.py createsuperuser
