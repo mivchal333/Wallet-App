@@ -1,8 +1,13 @@
 {% extends "wallet/base.html" %}
 {% block content %}
     {% if user.is_authenticated %}
-        <h1 id="hello1">Hello {{ user.get_username }}</h1>
+        <h1>Hello, {{ user.get_username }}</h1>
         <h2>What you want to do today?</h2>
+        <br/>
+        <h3>In this month you earned: <b class="income-amount">{{ income_sum }}</b></h3>
+        <br/>
+        <h3>In this month you spend: <b class="expense-amount">{{ expense_sum }}</b></h3>
+
     {% else %}
         <a href='/login'>You are not logged in, please login to see your wallets</a>
     {% endif %}

@@ -15,6 +15,11 @@
     color: green;
 }
 
+.expense-amount {
+    float: right;
+    color: red;
+}
+
 .income-card {
     margin-top: 20px;
     margin-bottom: 20px;
