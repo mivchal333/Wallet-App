@@ -147,3 +147,11 @@ def deleteWallet(request, wallet_id):
         return walletList(request)
     else:
         raise Http404("Wallet does not exist")
+
+
+def deleteIncome(request, income_id):
+    if request.user.is_authenticated:
+        Income.objects.get(pk=income_id).delete()
+        return incomeList(request)
+    else:
+        raise Http404("Income does not exist")
