@@ -2,12 +2,35 @@ from django.http import Http404
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
-from .forms import AddIncomeForm
+from .forms import AddIncomeForm, AddExpenseForm
 from .forms import AddWalletForm
 from .models import Wallet, Income, Expense
 from .service import getIncomesSumInThisMonth, getExpansesSumInThisMonth
 
 
+# Home
+def home(request):
+    if request.user.is_authenticated:
+        income_list = Income.objects.filter(user=request.user).order_by('updatedAt')[:3]
+        expense_list = Expense.objects.filter(user=request.user).order_by('updatedAt')[:3]
+        wallet_list = Wallet.objects.filter(user=request.user).order_by('updatedAt')[:3]
+
+        income_sum = getIncomesSumInThisMonth(request.user)
+        expense_sum = getExpansesSumInThisMonth(request.user)
+
+        context = {
+            'income_list': income_list,
+            'expense_list': expense_list,
+            'wallet_list': wallet_list,
+            'income_sum': income_sum,
+            'expense_sum': expense_sum
+        }
+        return render(request, 'wallet/home.html', context)
+    else:
+        return render(request, 'wallet/home.html')
+
+
+# Wallet
 def walletDetails(request, wallet_id):
     if request.user.is_authenticated:
         try:
@@ -23,19 +46,6 @@ def walletDetails(request, wallet_id):
             'lastExpenses': last_expenses
         }
         return render(request, 'wallet/walletDetails.html', context)
-    else:
-        return redirect("/login")
-
-
-def incomeDetails(request, income_id):
-    if request.user.is_authenticated:
-
-        try:
-            income = Income.objects.get(pk=income_id)
-        except Income.DoesNotExist:
-            raise Http404("Income does not exist")
-        context = {'income': income}
-        return render(request, 'wallet/incomeDetails.html', context)
     else:
         return redirect("/login")
 
@@ -61,6 +71,41 @@ def addWallet(request):
             form = AddWalletForm()
 
         return render(request, 'wallet/walletAdd.html', {'form': form})
+    else:
+        return redirect("/login")
+
+
+def walletList(request):
+    if request.user.is_authenticated:
+        wallet_list = Wallet.objects.filter(user=request.user)
+
+        context = {
+            'walletList': wallet_list,
+        }
+        return render(request, 'wallet/walletList.html', context)
+    else:
+        return redirect("/login")
+
+
+def deleteWallet(request, wallet_id):
+    if request.user.is_authenticated:
+        Wallet.objects.get(pk=wallet_id).delete()
+        return walletList(request)
+    else:
+        raise Http404("Wallet does not exist")
+
+
+# Income
+
+
+def incomeDetails(request, income_id):
+    if request.user.is_authenticated:
+        try:
+            income = Income.objects.get(pk=income_id)
+        except Income.DoesNotExist:
+            raise Http404("Income does not exist")
+        context = {'income': income}
+        return render(request, 'wallet/incomeDetails.html', context)
     else:
         return redirect("/login")
 
@@ -96,18 +141,6 @@ def incomeAdd(request, wallet_id):
         return redirect("/login")
 
 
-def walletList(request):
-    if request.user.is_authenticated:
-        wallet_list = Wallet.objects.filter(user=request.user)
-
-        context = {
-            'walletList': wallet_list,
-        }
-        return render(request, 'wallet/walletList.html', context)
-    else:
-        return redirect("/login")
-
-
 def incomeList(request):
     if request.user.is_authenticated:
         income_list = Income.objects.filter(user=request.user)
@@ -120,38 +153,73 @@ def incomeList(request):
         return redirect("/login")
 
 
-def home(request):
-    if request.user.is_authenticated:
-        income_list = Income.objects.filter(user=request.user).order_by('updatedAt')[:3]
-        expense_list = Expense.objects.filter(user=request.user).order_by('updatedAt')[:3]
-        wallet_list = Wallet.objects.filter(user=request.user).order_by('updatedAt')[:3]
-
-        income_sum = getIncomesSumInThisMonth(request.user)
-        expense_sum = getExpansesSumInThisMonth(request.user)
-
-        context = {
-            'income_list': income_list,
-            'expense_list': expense_list,
-            'wallet_list': wallet_list,
-            'income_sum': income_sum,
-            'expense_sum': expense_sum
-        }
-        return render(request, 'wallet/home.html', context)
-    else:
-        return render(request, 'wallet/home.html')
-
-
-def deleteWallet(request, wallet_id):
-    if request.user.is_authenticated:
-        Wallet.objects.get(pk=wallet_id).delete()
-        return walletList(request)
-    else:
-        raise Http404("Wallet does not exist")
-
-
 def deleteIncome(request, income_id):
     if request.user.is_authenticated:
         Income.objects.get(pk=income_id).delete()
         return incomeList(request)
     else:
         raise Http404("Income does not exist")
+
+
+# Expense
+def expenseDetails(request, expense_id):
+    if request.user.is_authenticated:
+        try:
+            expense = Expense.objects.get(pk=expense_id)
+        except Expense.DoesNotExist:
+            raise Http404("expense does not exist")
+        context = {'expense': expense}
+        return render(request, 'wallet/expenseDetails.html', context)
+    else:
+        return redirect("/login")
+
+
+def expenseAdd(request, wallet_id):
+    if request.user.is_authenticated:
+        try:
+            wallet = Wallet.objects.get(pk=wallet_id)
+        except Expense.DoesNotExist:
+            raise Http404("Wallet does not exist")
+
+        if request.method == 'POST':
+            form = AddExpenseForm(request.POST)
+            if form.is_valid():
+                wallet = Wallet.objects.get(pk=wallet_id)
+                name = form.cleaned_data['name']
+                amount = form.cleaned_data['amount']
+                execution_date = form.cleaned_data['executionDate']
+                category = form.cleaned_data['category']
+                done = form.cleaned_data['done']
+                new_expense = Expense(name=name, amount=amount, executionDate=execution_date, category=category,
+                                      wallet=wallet, done=done, user=request.user)
+                new_expense.save()
+
+                return HttpResponseRedirect('/wallet/expense/' + str(new_expense.id))
+
+        # if a GET (or any other method) we'll create a blank form
+        else:
+            form = AddExpenseForm()
+
+        return render(request, 'wallet/expenseAdd.html', {'form': form, 'wallet_id': wallet_id, 'wallet': wallet})
+    else:
+        return redirect("/login")
+
+
+def expenseList(request):
+    if request.user.is_authenticated:
+        expense_list = Expense.objects.filter(user=request.user)
+
+        context = {
+            'expenseList': expense_list,
+        }
+        return render(request, 'wallet/expenseList.html', context)
+    else:
+        return redirect("/login")
+
+
+def deleteExpense(request, expense_id):
+    if request.user.is_authenticated:
+        Expense.objects.get(pk=expense_id).delete()
+        return expenseList(request)
+    else:
+        raise Http404("Expense does not exist")

@@ -30,7 +30,7 @@ class Expense(models.Model):
     executionDate = models.DateTimeField(blank=True, null=True)
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, models.SET_NULL, null=True, blank=True)
     done = models.BooleanField()
 
     def __str__(self):

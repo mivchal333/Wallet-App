@@ -1,7 +1,7 @@
 {% extends "wallet/base.html" %}
 {% block content %}
-    <h3>Adding income to: {{ wallet.name }}</h3>
-    <form action="/wallet/{{ wallet_id }}/income/add" method="post">
+    <h3>Adding expense to: {{ wallet.name }}</h3>
+    <form action="/wallet/{{ wallet_id }}/expense/add" method="post">
         {% csrf_token %}
         {% for field in form %}
             <div class="form-group wallet-add-wrapper">

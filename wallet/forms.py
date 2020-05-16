@@ -16,6 +16,17 @@ class AddIncomeForm(forms.Form):
     amount = forms.DecimalField(label='Amount', min_value=0, initial=0,
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     date = forms.DateTimeField(initial=datetime.date.today, label='Date',
-                               widget=forms.TextInput(attrs={'class': "form-control"}))
+                               widget=forms.DateTimeInput(attrs={'class': "form-control"}))
     category = forms.ModelChoiceField(queryset=Category.objects.all(), required=False,
-                                      widget=forms.TextInput(attrs={'class': "form-control"}))
+                                      widget=forms.Select(attrs={'class': "form-control"}))
+
+
+class AddExpenseForm(forms.Form):
+    name = forms.CharField(label='Name', max_length=100, widget=forms.TextInput(attrs={'class': "form-control"}))
+    amount = forms.DecimalField(label='Amount', min_value=0, initial=0,
+                                widget=forms.TextInput(attrs={'class': "form-control"}))
+    executionDate = forms.DateTimeField(initial=datetime.date.today, label='Date',
+                                        widget=forms.TextInput(attrs={'class': "form-control"}))
+    category = forms.ModelChoiceField(queryset=Category.objects.all(), required=False,
+                                      widget=forms.Select(attrs={'class': "form-control"}))
+    done = forms.BooleanField(required=False)
