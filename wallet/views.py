@@ -139,3 +139,11 @@ def home(request):
         return render(request, 'wallet/home.html', context)
     else:
         return render(request, 'wallet/home.html')
+
+
+def deleteWallet(request, wallet_id):
+    if request.user.is_authenticated:
+        Wallet.objects.get(pk=wallet_id).delete()
+        return walletList(request)
+    else:
+        raise Http404("Wallet does not exist")
