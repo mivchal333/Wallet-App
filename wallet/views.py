@@ -9,77 +9,91 @@ from .service import getIncomesSumInThisMonth, getExpansesSumInThisMonth
 
 
 def walletDetails(request, wallet_id):
-    try:
-        wallet = Wallet.objects.get(pk=wallet_id)
-    except Wallet.DoesNotExist:
-        raise Http404("Wallet does not exist")
-    last_incomes = Income.objects.filter(wallet=wallet_id).order_by('-createdAt')[:5]
-    last_expenses = Expense.objects.filter(wallet=wallet_id).order_by('-createdAt')[:5]
+    if request.user.is_authenticated:
+        try:
+            wallet = Wallet.objects.get(pk=wallet_id)
+        except Wallet.DoesNotExist:
+            raise Http404("Wallet does not exist")
+        last_incomes = Income.objects.filter(wallet=wallet_id).order_by('-createdAt')[:5]
+        last_expenses = Expense.objects.filter(wallet=wallet_id).order_by('-createdAt')[:5]
 
-    context = {
-        'wallet': wallet,
-        'lastIncomes': last_incomes,
-        'lastExpenses': last_expenses
-    }
-    return render(request, 'wallet/walletDetails.html', context)
+        context = {
+            'wallet': wallet,
+            'lastIncomes': last_incomes,
+            'lastExpenses': last_expenses
+        }
+        return render(request, 'wallet/walletDetails.html', context)
+    else:
+        return redirect("/login")
 
 
 def incomeDetails(request, income_id):
-    try:
-        income = Income.objects.get(pk=income_id)
-    except Income.DoesNotExist:
-        raise Http404("Income does not exist")
-    context = {'income': income}
-    return render(request, 'wallet/incomeDetails.html', context)
+    if request.user.is_authenticated:
+
+        try:
+            income = Income.objects.get(pk=income_id)
+        except Income.DoesNotExist:
+            raise Http404("Income does not exist")
+        context = {'income': income}
+        return render(request, 'wallet/incomeDetails.html', context)
+    else:
+        return redirect("/login")
 
 
 def addWallet(request):
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = AddWalletForm(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            name = form.cleaned_data['name']
-            amount = form.cleaned_data['amount']
-            new_wallet = Wallet(name=name, amount=amount)
-            new_wallet.save()
-            request.user.wallets.add(new_wallet)
+    if request.user.is_authenticated:
+        # if this is a POST request we need to process the form data
+        if request.method == 'POST':
+            # create a form instance and populate it with data from the request:
+            form = AddWalletForm(request.POST)
+            # check whether it's valid:
+            if form.is_valid():
+                name = form.cleaned_data['name']
+                amount = form.cleaned_data['amount']
+                new_wallet = Wallet(name=name, amount=amount)
+                new_wallet.save()
+                request.user.wallets.add(new_wallet)
 
-            return HttpResponseRedirect('/wallet/' + str(new_wallet.id))
+                return HttpResponseRedirect('/wallet/' + str(new_wallet.id))
 
-    # if a GET (or any other method) we'll create a blank form
+        # if a GET (or any other method) we'll create a blank form
+        else:
+            form = AddWalletForm()
+
+        return render(request, 'wallet/walletAdd.html', {'form': form})
     else:
-        form = AddWalletForm()
-
-    return render(request, 'wallet/walletAdd.html', {'form': form})
+        return redirect("/login")
 
 
 def incomeAdd(request, wallet_id):
-    # if this is a POST request we need to process the form data
-    wallet = Wallet.objects.get(pk=wallet_id)
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = AddIncomeForm(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            wallet = Wallet.objects.get(pk=wallet_id)
-            print(wallet)
-            source = form.cleaned_data['source']
-            amount = form.cleaned_data['amount']
-            date = form.cleaned_data['date']
-            category = form.cleaned_data['category']
-            new_income = Income(source=source, amount=amount, executionDate=date, category=category, wallet=wallet,
-                                user=request.user)
-            new_income.save()
+    if request.user.is_authenticated:
 
-            return HttpResponseRedirect('/wallet/income/' + str(new_income.id))
+        # if this is a POST request we need to process the form data
+        wallet = Wallet.objects.get(pk=wallet_id)
+        if request.method == 'POST':
+            # create a form instance and populate it with data from the request:
+            form = AddIncomeForm(request.POST)
+            # check whether it's valid:
+            if form.is_valid():
+                wallet = Wallet.objects.get(pk=wallet_id)
+                print(wallet)
+                source = form.cleaned_data['source']
+                amount = form.cleaned_data['amount']
+                date = form.cleaned_data['date']
+                category = form.cleaned_data['category']
+                new_income = Income(source=source, amount=amount, executionDate=date, category=category, wallet=wallet,
+                                    user=request.user)
+                new_income.save()
 
-    # if a GET (or any other method) we'll create a blank form
+                return HttpResponseRedirect('/wallet/income/' + str(new_income.id))
+
+        # if a GET (or any other method) we'll create a blank form
+        else:
+            form = AddIncomeForm()
+
+        return render(request, 'wallet/incomeAdd.html', {'form': form, 'wallet_id': wallet_id, 'wallet': wallet})
     else:
-        form = AddIncomeForm()
-
-    return render(request, 'wallet/incomeAdd.html', {'form': form, 'wallet_id': wallet_id, 'wallet': wallet})
+        return redirect("/login")
 
 
 def walletList(request):
@@ -123,6 +137,5 @@ def home(request):
             'expense_sum': expense_sum
         }
         return render(request, 'wallet/home.html', context)
-
     else:
-        return redirect("/login")
+        return render(request, 'wallet/home.html')

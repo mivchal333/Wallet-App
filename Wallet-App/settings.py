@@ -122,5 +122,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-LOGIN_REDIRECT_URL = '/wallet'
-LOGOUT_REDIRECT_URL = '/wallet'
+LOGIN_REDIRECT_URL = '/wallet/home'
+LOGOUT_REDIRECT_URL = '/wallet/home'

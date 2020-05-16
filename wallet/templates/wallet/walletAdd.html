@@ -1,6 +1,6 @@
 {% extends "wallet/base.html" %}
 {% block content %}
-    <h3>Add wallet form</h3>
+    <h3>Add wallet</h3>
     <form action="/wallet/add/" method="post">
         {% csrf_token %}
         {% for field in form %}

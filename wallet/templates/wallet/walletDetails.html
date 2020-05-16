@@ -4,41 +4,54 @@
         <h3>Wallet: {{ wallet.name }}</h3>
         <h4>Actual amount: {{ wallet.amount }}</h4>
         <h5>Creator: {{ wallet.user }}</h5>
-
+        <h5>Created at: {{ wallet.createdAt }}</h5>
+        <h5>Updated at: {{ wallet.updatedAt }}</h5>
         <br/>
-        <div class="last-incomes ">
-            <h4>Last incomes:
-                <a class="btn-sm btn-primary add-action-right-btn" href="/wallet/{{ wallet.id }}/income/add">
-                    Add income
-                </a>
-            </h4>
+        {% if not lastIncomes and not lastExpenses %}
+            <h3>Plase, add any data to wallet </h3>
+            <a class="btn btn-primary" href="/wallet/{{ wallet.id }}/income/add">
+                Add income
+            </a>
+            <a class="btn btn-primary" href="/wallet/{{ wallet.id }}/expense/add">
+                Add expense
+            </a>
+        {% else %}
             {% if lastIncomes %}
-                <ul class="list-group">
-                    {% for income in lastIncomes %}
-                        <li class="list-group-item list-group-item-action"><a
-                                href="/wallet/income/{{ income.id }}/">{{ income.source }}</a> - {{ income.amount }}
-                        </li>
-                    {% endfor %}
-                </ul>
+
+                <div class="last-incomes ">
+                    <h4>Last incomes:
+                        <a class="btn-sm btn-primary add-action-right-btn" href="/wallet/{{ wallet.id }}/income/add">
+                            Add income
+                        </a>
+                    </h4>
+                    <ul class="list-group">
+                        {% for income in lastIncomes %}
+                            <li class="list-group-item list-group-item-action"><a
+                                    href="/wallet/income/{{ income.id }}/">{{ income.source }}</a> - {{ income.amount }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             {% endif %}
-        </div>
-        <br/>
-        <div class="last-expenses">
-            <h4>Last expanses:
-                <a class="btn-sm btn-primary add-action-right-btn" href="/wallet/{{ wallet.id }}/expense/add">
-                    Add expense
-                </a>
-            </h4>
+            <br/>
             {% if lastExpenses %}
-                <ul class="list-group">
-                    {% for expense in lastExpenses %}
-                        <li class="list-group-item list-group-item-action"><a
-                                href="/wallet/expense/{{ expense.id }}/">{{ expense.name }}</a> - {{ expense.amount }}
-                        </li>
-                    {% endfor %}
-                </ul>
+                <div class="last-expenses">
+                    <h4>Last expanses:
+                        <a class="btn-sm btn-primary add-action-right-btn" href="/wallet/{{ wallet.id }}/expense/add">
+                            Add expense
+                        </a>
+                    </h4>
+                    <ul class="list-group">
+                        {% for expense in lastExpenses %}
+                            <li class="list-group-item list-group-item-action"><a
+                                    href="/wallet/expense/{{ expense.id }}/">{{ expense.name }}</a>
+                                - {{ expense.amount }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             {% endif %}
-        </div>
+        {% endif %}
     {% else %}
         <p>Wallet is not available</p>
     {% endif %}

@@ -3,12 +3,21 @@
     {% if user.is_authenticated %}
         <h1>Hello, {{ user.get_username }}</h1>
         <h2>What you want to do today?</h2>
-        <br/>
-        <h3>In this month you earned: <b class="income-amount">{{ income_sum }}</b></h3>
-        <br/>
-        <h3>In this month you spend: <b class="expense-amount">{{ expense_sum }}</b></h3>
 
+        {% if wallet_list %}
+            <br/>
+            <h3>In this month you earned: <b class="income-amount">{{ income_sum }}</b></h3>
+            <br/>
+            <h3>In this month you spend: <b class="expense-amount">{{ expense_sum }}</b></h3>
+        {% else %}
+            <br/>
+            <h5>You don't have any wallet, please add one</h5>
+            <a href="/wallet/add" class="btn btn-primary" role="button" aria-disabled="true">Add wallet</a>
+        {% endif %}
     {% else %}
-        <a href='/login'>You are not logged in, please login to see your wallets</a>
+        <h3>You are not logged in :(</h3>
+        <br/>
+        <h3>Please login to see your wallets</h3>
+        <a href="/login" class="btn btn-primary btn-lg" role="button" aria-disabled="true">Log in</a>
     {% endif %}
 {% endblock content %}
