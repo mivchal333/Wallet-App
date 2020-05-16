@@ -8,7 +8,7 @@
         <h5>Updated at: {{ wallet.updatedAt }}</h5>
         <br/>
         {% if not lastIncomes and not lastExpenses %}
-            <h3>Plase, add any data to wallet </h3>
+            <h3>Please, add any data to wallet </h3>
             <a class="btn btn-primary" href="/wallet/{{ wallet.id }}/income/add">
                 Add income
             </a>
@@ -32,6 +32,10 @@
                         {% endfor %}
                     </ul>
                 </div>
+            {% else %}
+                <a class="btn btn-primary" href="/wallet/{{ wallet.id }}/income/add">
+                    Add income
+                </a>
             {% endif %}
             <br/>
             {% if lastExpenses %}
@@ -50,6 +54,11 @@
                         {% endfor %}
                     </ul>
                 </div>
+            {% else %}
+                <a class="btn btn-primary" href="/wallet/{{ wallet.id }}/expense/add">
+                    Add expense
+                </a>
+
             {% endif %}
         {% endif %}
     {% else %}
