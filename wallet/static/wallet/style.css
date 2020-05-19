@@ -2,11 +2,11 @@
     margin-top: 30px;
 }
 
-.wallet-list-wrapper, .income-list-wrapper {
+.wallet-list-wrapper, .income-list-wrapper, .expense-list-wrapper {
     max-width: 50%;
 }
 
-.wallet-add-wrapper input {
+.wallet-add-wrapper input, select {
     max-width: 300px;
 }
 
@@ -20,24 +20,29 @@
     color: red;
 }
 
-.income-card {
+.button-right-flow {
+    float: right;
+    color: red;
+}
+
+.income-card, .expense-card {
     margin-top: 20px;
     margin-bottom: 20px;
 }
 
-.income-details-body {
+.details-body {
     width: 60%;
 }
 
-.income-details-body .details-field-name {
+.details-body .details-field-name {
     margin-right: 40px;
 }
 
-.income-details-body .details-field-value {
+.details-body .details-field-value {
     float: right;
 }
 
-.income-details-body .details-field-value {
+.details-body .details-field-value {
     font-size: large;
 }
 

@@ -1,0 +1,18 @@
+{% extends "wallet/base.html" %}
+{% block content %}
+    <h3>Here you can see your expenses</h3>
+    <div class="list-group expense-list-wrapper">
+        {% for expense in expenseList %}
+            <div class="card expense-card">
+                <h4 class="card-header">{{ expense.name }} <b class="expense-amount">{{ expense.amount }}</b></h4>
+                <div class="card-body">
+                    <p>Category: <b>{{ expense.category.name }}</b></p>
+                    <p>Created at: <b>{{ expense.createdAt }}</b></p>
+                    <p>Wallet: <b>{{ expense.wallet.name }}</b></p>
+                    <a href="/wallet/expense/{{ expense.id }}" class="btn-sm btn-primary">See details</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <br/>
+{% endblock content %}
