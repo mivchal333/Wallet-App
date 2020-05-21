@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.db.models import Sum
 
-from wallet.models import Income, Expense
+from wallet.models import Income, Expense, Wallet
 
 
 def getIncomesSumInThisMonth(user):
@@ -26,3 +26,10 @@ def getExpansesSumInThisMonth(user):
         return expense_sum.get('amount__sum')
     else:
         return 0
+
+def updateWalledUpdatedAtTime(wallet_id):
+    wallet = Wallet.objects.get(pk=wallet_id)
+
+    today__date = datetime.now()
+    wallet.updatedAt = today__date
+    wallet.save()

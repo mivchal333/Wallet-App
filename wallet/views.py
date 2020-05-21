@@ -2,18 +2,19 @@ from django.http import Http404
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
+from datetime import datetime
 from .forms import AddIncomeForm, AddExpenseForm
 from .forms import AddWalletForm
 from .models import Wallet, Income, Expense
-from .service import getIncomesSumInThisMonth, getExpansesSumInThisMonth
+from .service import getIncomesSumInThisMonth, getExpansesSumInThisMonth, updateWalledUpdatedAtTime
 
 
 # Home
 def home(request):
     if request.user.is_authenticated:
-        income_list = Income.objects.filter(user=request.user).order_by('updatedAt')[:3]
-        expense_list = Expense.objects.filter(user=request.user).order_by('updatedAt')[:3]
-        wallet_list = Wallet.objects.filter(user=request.user).order_by('updatedAt')[:3]
+        income_list = Income.objects.filter(user=request.user).order_by('-updatedAt')[:3]
+        expense_list = Expense.objects.filter(user=request.user).order_by('-updatedAt')[:3]
+        wallet_list = Wallet.objects.filter(user=request.user).order_by('-updatedAt')[:3]
 
         income_sum = getIncomesSumInThisMonth(request.user)
         expense_sum = getExpansesSumInThisMonth(request.user)
@@ -77,7 +78,7 @@ def addWallet(request):
 
 def walletList(request):
     if request.user.is_authenticated:
-        wallet_list = Wallet.objects.filter(user=request.user)
+        wallet_list = Wallet.objects.filter(user=request.user).order_by('-updatedAt')
 
         context = {
             'walletList': wallet_list,
@@ -121,7 +122,8 @@ def incomeAdd(request, wallet_id):
             # check whether it's valid:
             if form.is_valid():
                 wallet = Wallet.objects.get(pk=wallet_id)
-                print(wallet)
+                updateWalledUpdatedAtTime(wallet_id)
+
                 source = form.cleaned_data['source']
                 amount = form.cleaned_data['amount']
                 date = form.cleaned_data['date']
@@ -143,7 +145,7 @@ def incomeAdd(request, wallet_id):
 
 def incomeList(request):
     if request.user.is_authenticated:
-        income_list = Income.objects.filter(user=request.user)
+        income_list = Income.objects.filter(user=request.user).order_by('-updatedAt')
 
         context = {
             'incomeList': income_list,
@@ -155,7 +157,10 @@ def incomeList(request):
 
 def deleteIncome(request, income_id):
     if request.user.is_authenticated:
-        Income.objects.get(pk=income_id).delete()
+
+        income = Income.objects.get(pk=income_id)
+        updateWalledUpdatedAtTime(income.wallet_id)
+        income.delete()
         return incomeList(request)
     else:
         raise Http404("Income does not exist")
@@ -185,6 +190,8 @@ def expenseAdd(request, wallet_id):
             form = AddExpenseForm(request.POST)
             if form.is_valid():
                 wallet = Wallet.objects.get(pk=wallet_id)
+                updateWalledUpdatedAtTime(wallet_id)
+
                 name = form.cleaned_data['name']
                 amount = form.cleaned_data['amount']
                 execution_date = form.cleaned_data['executionDate']
@@ -207,7 +214,7 @@ def expenseAdd(request, wallet_id):
 
 def expenseList(request):
     if request.user.is_authenticated:
-        expense_list = Expense.objects.filter(user=request.user)
+        expense_list = Expense.objects.filter(user=request.user).order_by('-updatedAt')
 
         context = {
             'expenseList': expense_list,
@@ -219,7 +226,9 @@ def expenseList(request):
 
 def deleteExpense(request, expense_id):
     if request.user.is_authenticated:
-        Expense.objects.get(pk=expense_id).delete()
+        expense = Expense.objects.get(pk=expense_id)
+        updateWalledUpdatedAtTime(expense.wallet_id)
+        expense.delete()
         return expenseList(request)
     else:
         raise Http404("Expense does not exist")
