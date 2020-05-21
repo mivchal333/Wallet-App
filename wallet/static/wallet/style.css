@@ -50,3 +50,7 @@
     display: inline-block;
     float: right;
 }
+
+.list-group-item-action a {
+    margin-right: 15px;
+}

@@ -13,7 +13,7 @@ class AddWalletForm(forms.Form):
 
 class AddIncomeForm(forms.Form):
     source = forms.CharField(label='Source', max_length=100, widget=forms.TextInput(attrs={'class': "form-control"}))
-    amount = forms.DecimalField(label='Amount', min_value=0, initial=0,
+    amount = forms.DecimalField(label='Amount', min_value=1, required=True,
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     date = forms.DateTimeField(initial=datetime.date.today, label='Date',
                                widget=forms.DateTimeInput(attrs={'class': "form-control"}))
@@ -23,7 +23,7 @@ class AddIncomeForm(forms.Form):
 
 class AddExpenseForm(forms.Form):
     name = forms.CharField(label='Name', max_length=100, widget=forms.TextInput(attrs={'class': "form-control"}))
-    amount = forms.DecimalField(label='Amount', min_value=0, initial=0,
+    amount = forms.DecimalField(label='Amount', min_value=1, required=True,
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     executionDate = forms.DateTimeField(initial=datetime.date.today, label='Date',
                                         widget=forms.TextInput(attrs={'class': "form-control"}))

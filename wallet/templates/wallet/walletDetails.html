@@ -28,7 +28,7 @@
                     <ul class="list-group">
                         {% for income in lastIncomes %}
                             <li class="list-group-item list-group-item-action"><a
-                                    href="/wallet/income/{{ income.id }}/">{{ income.source }}</a> - {{ income.amount }}
+                                    href="/wallet/income/{{ income.id }}/">{{ income.source }}</a> {{ income.amount }}
                             </li>
                         {% endfor %}
                     </ul>
@@ -50,7 +50,7 @@
                         {% for expense in lastExpenses %}
                             <li class="list-group-item list-group-item-action"><a
                                     href="/wallet/expense/{{ expense.id }}/">{{ expense.name }}</a>
-                                - {{ expense.amount }}
+                                {{ expense.amount }}
                             </li>
                         {% endfor %}
                     </ul>
