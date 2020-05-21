@@ -54,3 +54,6 @@
 .list-group-item-action a {
     margin-right: 15px;
 }
+.list-group-item-action span {
+    float: right;
+}

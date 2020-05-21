@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.db.models import Sum
+import decimal
 
 from wallet.models import Income, Expense, Wallet
 
@@ -27,9 +28,17 @@ def getExpansesSumInThisMonth(user):
     else:
         return 0
 
-def updateWalledUpdatedAtTime(wallet_id):
+
+def updateWalletAmount(wallet_id, amount, action_type):
     wallet = Wallet.objects.get(pk=wallet_id)
 
     today__date = datetime.now()
     wallet.updatedAt = today__date
+    old_amount = wallet.amount
+    if action_type == 'add':
+        new_amount = decimal.Decimal(old_amount) + amount
+    else:
+        new_amount = decimal.Decimal(old_amount) - amount
+
+    wallet.amount = new_amount
     wallet.save()

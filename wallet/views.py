@@ -6,7 +6,7 @@ from datetime import datetime
 from .forms import AddIncomeForm, AddExpenseForm
 from .forms import AddWalletForm
 from .models import Wallet, Income, Expense
-from .service import getIncomesSumInThisMonth, getExpansesSumInThisMonth, updateWalledUpdatedAtTime
+from .service import getIncomesSumInThisMonth, getExpansesSumInThisMonth, updateWalletAmount
 
 
 # Home
@@ -122,7 +122,6 @@ def incomeAdd(request, wallet_id):
             # check whether it's valid:
             if form.is_valid():
                 wallet = Wallet.objects.get(pk=wallet_id)
-                updateWalledUpdatedAtTime(wallet_id)
 
                 source = form.cleaned_data['source']
                 amount = form.cleaned_data['amount']
@@ -130,6 +129,7 @@ def incomeAdd(request, wallet_id):
                 category = form.cleaned_data['category']
                 new_income = Income(source=source, amount=amount, executionDate=date, category=category, wallet=wallet,
                                     user=request.user)
+                updateWalletAmount(wallet_id, amount, 'add')
                 new_income.save()
 
                 return HttpResponseRedirect('/wallet/income/' + str(new_income.id))
@@ -159,7 +159,7 @@ def deleteIncome(request, income_id):
     if request.user.is_authenticated:
 
         income = Income.objects.get(pk=income_id)
-        updateWalledUpdatedAtTime(income.wallet_id)
+        updateWalletAmount(income.wallet_id, income.amount, 'subtract')
         income.delete()
         return incomeList(request)
     else:
@@ -190,7 +190,6 @@ def expenseAdd(request, wallet_id):
             form = AddExpenseForm(request.POST)
             if form.is_valid():
                 wallet = Wallet.objects.get(pk=wallet_id)
-                updateWalledUpdatedAtTime(wallet_id)
 
                 name = form.cleaned_data['name']
                 amount = form.cleaned_data['amount']
@@ -199,6 +198,7 @@ def expenseAdd(request, wallet_id):
                 done = form.cleaned_data['done']
                 new_expense = Expense(name=name, amount=amount, executionDate=execution_date, category=category,
                                       wallet=wallet, done=done, user=request.user)
+                updateWalletAmount(wallet_id, amount, 'subtract')
                 new_expense.save()
 
                 return HttpResponseRedirect('/wallet/expense/' + str(new_expense.id))
@@ -227,7 +227,7 @@ def expenseList(request):
 def deleteExpense(request, expense_id):
     if request.user.is_authenticated:
         expense = Expense.objects.get(pk=expense_id)
-        updateWalledUpdatedAtTime(expense.wallet_id)
+        updateWalletAmount(expense.wallet_id, expense.amount, 'add')
         expense.delete()
         return expenseList(request)
     else:

@@ -3,7 +3,9 @@
     <h3>Here you can see your wallets</h3>
     <div class="list-group wallet-list-wrapper">
         {% for wallet in walletList %}
-            <a href="/wallet/{{ wallet.id }}" class="list-group-item list-group-item-action">{{ wallet.name }}</a>
+            <a href="/wallet/{{ wallet.id }}" class="list-group-item list-group-item-action">{{ wallet.name }}
+                <span>{{ wallet.amount }}</span>
+            </a>
         {% endfor %}
     </div>
     <br/>
