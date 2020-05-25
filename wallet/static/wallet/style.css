@@ -54,6 +54,20 @@
 .list-group-item-action a {
     margin-right: 15px;
 }
+
 .list-group-item-action span {
     float: right;
+}
+
+.income-amount-home {
+    color: green;
+}
+
+.expense-amount-home {
+    color: red;
+}
+
+.action-home-wrapper {
+display: block;
+    margin-left: 150px;
 }

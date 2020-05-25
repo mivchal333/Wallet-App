@@ -6,9 +6,31 @@
 
         {% if wallet_list %}
             <br/>
-            <h3>In this month you earned: <b class="income-amount">{{ income_sum }}</b></h3>
+            <h3>This month: </h3>
+            <h4>
+                <span class="action-home-wrapper">
+                    Earn:
+                    <b class="income-amount-home">{{ income_sum_month }}</b>
+                </span>
+                <span class="action-home-wrapper">
+                Spend:
+                <b class="expense-amount-home">{{ expense_sum_month }}</b>
+                </span>
+            </h4>
             <br/>
-            <h3>In this month you spend: <b class="button-right-flow">{{ expense_sum }}</b></h3>
+
+            <h3>In last week: </h3>
+            <h4>
+            <span class="action-home-wrapper">
+                Earn:
+                <b class="income-amount-home">{{ income_sum_in_last_week }}</b>
+            </span>
+                <span class="action-home-wrapper">
+                Spend:
+                <b class="expense-amount-home">{{ expense_sum_in_last_week }}</b>
+                </span>
+            </h4>
+            <br/>
         {% else %}
             <br/>
             <h5>You don't have any wallet, please add one</h5>

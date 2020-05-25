@@ -6,7 +6,8 @@ from datetime import datetime
 from .forms import AddIncomeForm, AddExpenseForm
 from .forms import AddWalletForm
 from .models import Wallet, Income, Expense
-from .service import getIncomesSumInThisMonth, getExpansesSumInThisMonth, updateWalletAmount
+from .service import getIncomesSumInThisMonth, getExpansesSumInThisMonth, updateWalletAmount, getExpansesSumInLastWeek, \
+    getIncomesSumInLastWeek
 
 
 # Home
@@ -16,15 +17,20 @@ def home(request):
         expense_list = Expense.objects.filter(user=request.user).order_by('-updatedAt')[:3]
         wallet_list = Wallet.objects.filter(user=request.user).order_by('-updatedAt')[:3]
 
-        income_sum = getIncomesSumInThisMonth(request.user)
-        expense_sum = getExpansesSumInThisMonth(request.user)
+        income_sum_month = getIncomesSumInThisMonth(request.user)
+        expense_sum_month = getExpansesSumInThisMonth(request.user)
+
+        expense_sum_in_last_week = getExpansesSumInLastWeek(request.user)
+        income_sum_in_last_week = getIncomesSumInLastWeek(request.user)
 
         context = {
             'income_list': income_list,
             'expense_list': expense_list,
             'wallet_list': wallet_list,
-            'income_sum': income_sum,
-            'expense_sum': expense_sum
+            'income_sum_month': income_sum_month,
+            'expense_sum_month': expense_sum_month,
+            'expense_sum_in_last_week': expense_sum_in_last_week,
+            'income_sum_in_last_week': income_sum_in_last_week,
         }
         return render(request, 'wallet/home.html', context)
     else:
