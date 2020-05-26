@@ -1,7 +1,14 @@
 {% extends "wallet/base.html" %}
+
+
+{% block scripts %}
+
+{% endblock scripts%}
+
 {% block content %}
     <h3>Here you can see your incomes</h3>
-    <div class="list-group income-list-wrapper">
+    <div class="wrapper">
+    <div class="list-group info">
         {% for income in incomeList %}
             <div class="card income-card">
                 <h4 class="card-header">{{ income.source }} <b class="income-amount">{{ income.amount }}</b></h4>
@@ -14,5 +21,9 @@
             </div>
         {% endfor %}
     </div>
+    <div class="chart">
+    </div>
+    </div>
     <br/>
+
 {% endblock content %}

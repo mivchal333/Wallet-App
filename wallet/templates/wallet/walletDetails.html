@@ -1,4 +1,8 @@
 {% extends "wallet/base.html" %}
+
+{% block scripts %}
+{% endblock scripts%}
+
 {% block content %}
     {% if wallet %}
         <a href="/wallet/{{ wallet.id }}/delete" class="btn btn-danger button-right-flow active delete-button-right"

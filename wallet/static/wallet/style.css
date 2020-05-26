@@ -51,6 +51,19 @@
     float: right;
 }
 
+.wrapper {
+    overflow: hidden; /* add this to contain floated children */
+}
+.info {
+    width: 40%;
+    float:left; /* add this */
+
+}
+.chart {
+    width: 60%;
+    float: left; /* add this */
+}
+
 .list-group-item-action a {
     margin-right: 15px;
 }

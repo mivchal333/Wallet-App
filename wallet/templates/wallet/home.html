@@ -1,35 +1,108 @@
 {% extends "wallet/base.html" %}
+
+{% block scripts %}
+    <script>
+    $(document).ready(function () {
+        var ctx = document.getElementById('homeMonthlyChart').getContext('2d');
+        var homeMonthlyChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Incomes','Expenses'],
+                datasets: [{
+                    label: '',
+                    data: [{{ income_sum_month}},{{ expense_sum_month }}
+                    ],
+                    backgroundColor: [
+                        'rgba(0, 128, 0, 1)',
+                        'rgba(255, 0, 0, 1)',
+                    ],
+                    borderColor: '#FFF',
+                    borderWidth: 3,
+
+                }]
+            },
+            options: {
+                hover: {
+                    mode: 'index'
+                }
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        var ctx = document.getElementById('homeWeeklyChart').getContext('2d');
+        var homeWeeklyChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Incomes','Expenses'],
+                datasets: [{
+                    label: '',
+                    data: [{{ income_sum_in_last_week }},{{ expense_sum_in_last_week }}
+                    ],
+                    backgroundColor: [
+                        'rgba(0, 128, 0, 1)',
+                        'rgba(255, 0, 0, 1)',
+                    ],
+                    borderColor: '#FFF',
+                    borderWidth: 3,
+
+                }]
+            },
+            options: {
+                hover: {
+                    mode: 'index'
+                }
+            }
+        });
+    });
+    </script>
+
+{% endblock scripts%}
+
+
+
 {% block content %}
     {% if user.is_authenticated %}
         <h1>Hello, {{ user.get_username }}</h1>
         <h2>What you want to do today?</h2>
-
         {% if wallet_list %}
+            <div class="wrapper">
+                <div class="info">
+                    <h3>This month: </h3>
+                    <h4>
+                        <span class="action-home-wrapper">
+                            Earn:
+                            <b class="income-amount-home">{{ income_sum_month }}</b>
+                        </span>
+                        <span class="action-home-wrapper">
+                            Spend:
+                            <b class="expense-amount-home">{{ expense_sum_month }}</b>
+                        </span>
+                    </h4>
+                </div>
+                <div class="chart">
+                    <canvas id="homeMonthlyChart"></canvas>
+                </div>
+            </div>
             <br/>
-            <h3>This month: </h3>
-            <h4>
-                <span class="action-home-wrapper">
-                    Earn:
-                    <b class="income-amount-home">{{ income_sum_month }}</b>
-                </span>
-                <span class="action-home-wrapper">
-                Spend:
-                <b class="expense-amount-home">{{ expense_sum_month }}</b>
-                </span>
-            </h4>
-            <br/>
-
-            <h3>In last week: </h3>
-            <h4>
-            <span class="action-home-wrapper">
-                Earn:
-                <b class="income-amount-home">{{ income_sum_in_last_week }}</b>
-            </span>
-                <span class="action-home-wrapper">
-                Spend:
-                <b class="expense-amount-home">{{ expense_sum_in_last_week }}</b>
-                </span>
-            </h4>
+            <div class="wrapper">
+                <div class="info">
+                    <h3>In last week: </h3>
+                    <h4>
+                        <span class="action-home-wrapper">
+                            Earn:
+                            <b class="income-amount-home">{{ income_sum_in_last_week }}</b>
+                        </span>
+                        <span class="action-home-wrapper">
+                            Spend:
+                            <b class="expense-amount-home">{{ expense_sum_in_last_week }}</b>
+                        </span>
+                    </h4>
+                </div>
+                <div class="chart">
+                    <canvas id="homeWeeklyChart"></canvas>
+                </div>
+            </div>
             <br/>
         {% else %}
             <br/>

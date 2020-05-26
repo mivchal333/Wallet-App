@@ -1,6 +1,7 @@
 from django.http import Http404
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.views.generic import TemplateView
 
 from datetime import datetime
 from .forms import AddIncomeForm, AddExpenseForm
@@ -37,6 +38,7 @@ def home(request):
         return render(request, 'wallet/home.html')
 
 
+
 # Wallet
 def walletDetails(request, wallet_id):
     if request.user.is_authenticated:
@@ -47,10 +49,17 @@ def walletDetails(request, wallet_id):
         last_incomes = Income.objects.filter(wallet=wallet_id).order_by('-createdAt')[:5]
         last_expenses = Expense.objects.filter(wallet=wallet_id).order_by('-createdAt')[:5]
 
+        data = []
+        income_list = Income.objects.filter(wallet=wallet_id)
+        for income in income_list:
+            data.append(income.amount)
+
+        income_sum = sum(data)
         context = {
             'wallet': wallet,
             'lastIncomes': last_incomes,
-            'lastExpenses': last_expenses
+            'lastExpenses': last_expenses,
+            'income_sum': income_sum,
         }
         return render(request, 'wallet/walletDetails.html', context)
     else:
@@ -153,8 +162,17 @@ def incomeList(request):
     if request.user.is_authenticated:
         income_list = Income.objects.filter(user=request.user).order_by('-updatedAt')
 
+        labels = []
+        data = []
+
+        for income in income_list:
+            labels.append(income.source)
+            data.append(income.amount)
+
         context = {
             'incomeList': income_list,
+            'labels': labels,
+            'data': data,
         }
         return render(request, 'wallet/incomeList.html', context)
     else:
