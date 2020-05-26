@@ -2,28 +2,74 @@
 
 
 {% block scripts %}
+    <script>
+$(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    $('#table_incomes tfoot th').each( function () {
+        var title = $(this).text();
+        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+    } );
 
+    // DataTable
+    var table = $('#table_incomes').DataTable({
+        initComplete: function () {
+            // Apply the search
+            this.api().columns().every( function () {
+                var that = this;
+
+                $( 'input', this.footer() ).on( 'keyup change clear', function () {
+                    if ( that.search() !== this.value ) {
+                        that
+                            .search( this.value )
+                            .draw();
+                    }
+                } );
+            } );
+        }
+    });
+
+} );
+    </script>
 {% endblock scripts%}
 
 {% block content %}
     <h3>Here you can see your incomes</h3>
-    <div class="wrapper">
-    <div class="list-group info">
-        {% for income in incomeList %}
-            <div class="card income-card">
-                <h4 class="card-header">{{ income.source }} <b class="income-amount">{{ income.amount }}</b></h4>
-                <div class="card-body">
-                    <p>Category: <b>{{ income.category.name }}</b></p>
-                    <p>Created at: <b>{{ income.createdAt }}</b></p>
-                    <p>Wallet: <b>{{ income.wallet.name }}</b></p>
-                    <a href="/wallet/income/{{ income.id }}" class="btn-sm btn-primary">See details</a>
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-    <div class="chart">
+    <div>
+        <table id="table_incomes" class="ui celled table">
+            <thead>
+                <tr>
+                    <th>Source</th>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Wallet</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for income in incomeList %}
+                <tr>
+                    <td>{{ income.source }}</td>
+                    <td>${{ income.amount }}</td>
+                    <td>{{ income.category.name }}</td>
+                    <td>{{ income.createdAt }}</td>
+                    <td>{{ income.wallet.name }}</td>
+                    <td><a href="/wallet/income/{{ income.id }}" class="btn-sm btn-primary">See details</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Source</th>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Wallet</th>
+                    <th>Details</th>
+                </tr>
+        </tfoot>
+    </table>
     </div>
     </div>
     <br/>
-
 {% endblock content %}

@@ -10,6 +10,7 @@ class Category(models.Model):
     priority = models.IntegerField(default=1, help_text="Insert number from 1 to 10")
     createdAt = models.DateTimeField(auto_now_add=True)
 
+    
     def __str__(self):
         return self.name
 
