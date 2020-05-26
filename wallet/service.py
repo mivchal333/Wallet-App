@@ -7,6 +7,15 @@ import decimal
 from wallet.models import Income, Expense, Wallet
 
 
+def getIncomeSum(user):
+    income_sum_all = Income.objects.filter(user=user).aggregate(Sum('amount'))
+    if income_sum_all.get('amount__sum'):
+        return income_sum_all.get('amount__sum')
+    else:
+        return 0
+
+
+
 def getIncomesSumInThisMonth(user):
     today_date = datetime.today().date()
     first_day_of_month = today_date.replace(day=1)

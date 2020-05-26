@@ -3,9 +3,8 @@ from django.contrib.auth.models import User
 
 
 class Category(models.Model):
+    user = models.ForeignKey(User, default='', on_delete=models.CASCADE)
     name = models.CharField(max_length=20, default='')
-    priority = models.IntegerField()
-    createdAt = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
@@ -30,7 +29,7 @@ class Expense(models.Model):
     executionDate = models.DateTimeField(blank=True, null=True)
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, models.SET_NULL, null=True, blank=True)
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE)
     done = models.BooleanField()
 
     def __str__(self):
