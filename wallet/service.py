@@ -73,9 +73,9 @@ def updateWalletAmount(wallet_id, amount, action_type):
     wallet.updatedAt = today__date
     old_amount = wallet.amount
     if action_type == 'add':
-        new_amount = decimal.Decimal(old_amount) + amount
+        new_amount = float(old_amount) + float(amount)
     else:
-        new_amount = decimal.Decimal(old_amount) - amount
+        new_amount = float(old_amount) - float(amount)
 
     wallet.amount = new_amount
     wallet.save()

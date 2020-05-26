@@ -1,41 +1,9 @@
 {% extends "wallet/base.html" %}
 
 {% block scripts %}
-    <script>
-    $(document).ready(function () {
-
-        var ctx = document.getElementById('walletChart').getContext('2d');
-        var walletChart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: ['Wallet Amount', 'Sum of Incomes'],
-                datasets: [{
-                    label: 'Incomes vs Wallet amount',
-                    data: [{{wallet.amount}},{{ income_sum }}
-                    ],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                    ],
-                    borderColor: '#FFF',
-                    borderWidth: 3,
-
-                }]
-            },
-            options: {
-                hover: {
-                    mode: 'index'
-                }
-            }
-        });
-    });
-    </script>
-
 {% endblock scripts%}
 
 {% block content %}
-    <div class="wrapper">
-    <div class="info">
     {% if wallet %}
         <a href="/wallet/{{ wallet.id }}/delete" class="btn btn-danger button-right-flow active delete-button-right"
            role="button" aria-pressed="true">Delete</a>
@@ -44,11 +12,6 @@
         <h5>Creator: {{ wallet.user }}</h5>
         <h5>Created at: {{ wallet.createdAt }}</h5>
         <h5>Updated at: {{ wallet.updatedAt }}</h5>
-        </div>
-        <div class="chart">
-            <canvas id="walletChart"></canvas>
-        </div>
-        </div>
         <br/>
         {% if not lastIncomes and not lastExpenses %}
             <h3>Please, add any data to wallet </h3>
