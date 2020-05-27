@@ -126,4 +126,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+wallet/migrations
 # End of https://www.gitignore.io/api/django
