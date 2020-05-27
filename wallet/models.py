@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 class Category(models.Model):
     user = models.ForeignKey(User, default='', on_delete=models.CASCADE)
     name = models.CharField(max_length=20, default='')
+    priority = models.IntegerField(default=1, help_text="Insert number from 1 to 10")
+    createdAt = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name

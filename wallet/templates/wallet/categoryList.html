@@ -1,0 +1,24 @@
+{% extends "wallet/base.html" %}
+{% block content %}
+    <h3>Here you can see your categories
+        <a href="/wallet/category/add" class="btn-sm btn-primary add-action-right-btn" role="button" aria-disabled="true">Add
+            category</a>
+    </h3>
+    <div class="list-group category-list-wrapper">
+        {% if categoryList %}
+            {% for category in categoryList %}
+                <div class="card category-card">
+                    <h4 class="card-header">{{ category.name }}</h4>
+                    <div class="card-body">
+                        <p>Priority: <b>{{ category.priority }}</b></p>
+                        <p>Created at: <b>{{ category.createdAt }}</b></p>
+                        <a href="/wallet/category/{{ category.id }}" class="btn-sm btn-primary">See details</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <h4>Please add at least one category</h4>
+        {% endif %}
+    </div>
+    <br/>
+{% endblock content %}

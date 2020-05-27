@@ -16,4 +16,8 @@ urlpatterns = [
     path('expense/<int:expense_id>/', views.expenseDetails, name='expenseDetails'),
     path('<int:wallet_id>/expense/add', views.expenseAdd, name='expenseAdd'),
     path('expense/<int:expense_id>/delete', views.deleteExpense, name='expenseDelete'),
+    path('category/', views.categoryList, name='categoryList'),
+    path('category/add', views.categoryAdd, name='categoryAdd'),
+    path('category/<int:category_id>', views.categoryDetails, name='categoryDetails'),
+    path('category/<int:category_id>/delete', views.deleteCategory, name='deleteCategory'),
 ]

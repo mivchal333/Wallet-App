@@ -1,12 +1,12 @@
-from django.http import Http404
+from django.http import Http404, HttpResponseForbidden
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 
 from datetime import datetime
-from .forms import AddIncomeForm, AddExpenseForm
+from .forms import AddIncomeForm, AddExpenseForm, AddCategoryForm
 from .forms import AddWalletForm
-from .models import Wallet, Income, Expense
+from .models import Wallet, Income, Expense, Category
 from .service import getIncomesSumInThisMonth, getExpansesSumInThisMonth, updateWalletAmount, getExpansesSumInLastWeek, \
     getIncomesSumInLastWeek
 
@@ -36,7 +36,6 @@ def home(request):
         return render(request, 'wallet/home.html', context)
     else:
         return render(request, 'wallet/home.html')
-
 
 
 # Wallet
@@ -151,7 +150,7 @@ def incomeAdd(request, wallet_id):
 
         # if a GET (or any other method) we'll create a blank form
         else:
-            form = AddIncomeForm()
+            form = AddIncomeForm(request.user)
 
         return render(request, 'wallet/incomeAdd.html', {'form': form, 'wallet_id': wallet_id, 'wallet': wallet})
     else:
@@ -229,7 +228,7 @@ def expenseAdd(request, wallet_id):
 
         # if a GET (or any other method) we'll create a blank form
         else:
-            form = AddExpenseForm()
+            form = AddExpenseForm(request.user)
 
         return render(request, 'wallet/expenseAdd.html', {'form': form, 'wallet_id': wallet_id, 'wallet': wallet})
     else:
@@ -256,3 +255,61 @@ def deleteExpense(request, expense_id):
         return expenseList(request)
     else:
         raise Http404("Expense does not exist")
+
+
+# Category
+
+def categoryDetails(request, category_id):
+    if request.user.is_authenticated:
+        try:
+            category = Category.objects.get(pk=category_id)
+        except Category.DoesNotExist:
+            raise Http404("category does not exist")
+        context = {'category': category}
+        return render(request, 'wallet/categoryDetails.html', context)
+    else:
+        return redirect("/login")
+
+
+def categoryAdd(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = AddCategoryForm(request.POST)
+            if form.is_valid():
+                name = form.cleaned_data['name']
+                priority = form.cleaned_data['priority']
+                new_category = Category(name=name, priority=priority, user=request.user)
+                new_category.save()
+                return HttpResponseRedirect('/wallet/category/' + str(new_category.id))
+
+        # if a GET (or any other method) we'll create a blank form
+        else:
+            form = AddCategoryForm()
+
+        return render(request, 'wallet/categoryAdd.html', {'form': form})
+    else:
+        return redirect("/login")
+
+
+def categoryList(request):
+    if request.user.is_authenticated:
+        category_list = Category.objects.filter(user=request.user).order_by('-createdAt')
+
+        context = {
+            'categoryList': category_list,
+        }
+        return render(request, 'wallet/categoryList.html', context)
+    else:
+        return redirect("/login")
+
+
+def deleteCategory(request, category_id):
+    if request.user.is_authenticated:
+        category = Category.objects.get(pk=category_id)
+        if category.user == request.user:
+            category.delete()
+        else:
+            raise HttpResponseForbidden("Permission denied")
+        return categoryList(request)
+    else:
+        raise Http404("Category does not exist")

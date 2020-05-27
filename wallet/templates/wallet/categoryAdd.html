@@ -1,0 +1,18 @@
+{% extends "wallet/base.html" %}
+{% block content %}
+    <h3>Add category</h3>
+    <form action="/wallet/category/add" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group category-add-wrapper">
+                {{ field.label_tag }} {{ field }}
+                {{ field.errors }}
+                {% if field.help_text %}
+                    <p class="help">{{ field.help_text|safe }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <input type="submit" class="btn btn-primary" value="Create">
+        <a href="/category" class="btn btn-secondary active" role="button" aria-pressed="true">Back</a>
+    </form>
+{% endblock content %}

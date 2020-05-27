@@ -12,21 +12,35 @@ class AddWalletForm(forms.Form):
 
 
 class AddIncomeForm(forms.Form):
+    def __init__(self, user, *args, **kwargs):
+        super(AddIncomeForm, self).__init__(*args, **kwargs)
+        self.fields['category'].queryset = Category.objects.filter(user=user)
+
     source = forms.CharField(label='Source', max_length=100, widget=forms.TextInput(attrs={'class': "form-control"}))
     amount = forms.DecimalField(label='Amount', min_value=1, required=True,
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     date = forms.DateTimeField(initial=datetime.date.today, label='Date',
                                widget=forms.DateTimeInput(attrs={'class': "form-control"}))
-    category = forms.ModelChoiceField(queryset=Category.objects.all(), required=False,
+    category = forms.ModelChoiceField(queryset=Category.objects.filter(user__id=1), required=False,
                                       widget=forms.Select(attrs={'class': "form-control"}))
 
 
 class AddExpenseForm(forms.Form):
+    def __init__(self, user, *args, **kwargs):
+        super(AddExpenseForm, self).__init__(*args, **kwargs)
+        self.fields['category'].queryset = Category.objects.filter(user=user)
+
     name = forms.CharField(label='Name', max_length=100, widget=forms.TextInput(attrs={'class': "form-control"}))
     amount = forms.DecimalField(label='Amount', min_value=1, required=True,
                                 widget=forms.TextInput(attrs={'class': "form-control"}))
     executionDate = forms.DateTimeField(initial=datetime.date.today, label='Date',
                                         widget=forms.TextInput(attrs={'class': "form-control"}))
-    category = forms.ModelChoiceField(queryset=Category.objects.all(), required=False,
+    category = forms.ModelChoiceField(required=False, queryset=Category.objects.filter(user__id=1),
                                       widget=forms.Select(attrs={'class': "form-control"}))
     done = forms.BooleanField(required=False)
+
+
+class AddCategoryForm(forms.Form):
+    name = forms.CharField(label='Name', max_length=100, widget=forms.TextInput(attrs={'class': "form-control"}))
+    priority = forms.DecimalField(label='Priority', min_value=1, required=True, max_value=10,
+                                  widget=forms.TextInput(attrs={'class': "form-control", 'type': 'number'}))

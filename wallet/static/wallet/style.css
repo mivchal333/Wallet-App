@@ -6,7 +6,7 @@
     max-width: 50%;
 }
 
-.wallet-add-wrapper input, select {
+.wallet-add-wrapper input, select, .category-add-wrapper {
     max-width: 300px;
 }
 
@@ -46,7 +46,7 @@
     font-size: large;
 }
 
-.last-incomes .add-action-right-btn, .last-expenses .add-action-right-btn {
+.add-action-right-btn {
     display: inline-block;
     float: right;
 }
@@ -54,11 +54,13 @@
 .wrapper {
     overflow: hidden; /* add this to contain floated children */
 }
+
 .info {
     width: 40%;
-    float:left; /* add this */
+    float: left; /* add this */
 
 }
+
 .chart {
     width: 60%;
     float: left; /* add this */
@@ -81,6 +83,9 @@
 }
 
 .action-home-wrapper {
-display: block;
+    display: block;
     margin-left: 150px;
+}
+.category-add-wrapper input#id_priority{
+    max-width: 70px;
 }
