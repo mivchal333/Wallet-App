@@ -12,9 +12,12 @@ class AddWalletForm(forms.Form):
 
 
 class AddIncomeForm(forms.Form):
-    def __init__(self, user, *args, **kwargs):
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
         super(AddIncomeForm, self).__init__(*args, **kwargs)
-        self.fields['category'].queryset = Category.objects.filter(user=user)
+        self.fields['category'] = forms.ModelChoiceField(queryset=Category.objects.filter(user=user), required=False,
+                                                         widget=forms.Select(attrs={'class': "form-control"}))
 
     source = forms.CharField(label='Source', max_length=100, widget=forms.TextInput(attrs={'class': "form-control"}))
     amount = forms.DecimalField(label='Amount', min_value=1, required=True,
@@ -26,9 +29,11 @@ class AddIncomeForm(forms.Form):
 
 
 class AddExpenseForm(forms.Form):
-    def __init__(self, user, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
         super(AddExpenseForm, self).__init__(*args, **kwargs)
-        self.fields['category'].queryset = Category.objects.filter(user=user)
+        self.fields['category'] = forms.ModelChoiceField(queryset=Category.objects.filter(user=user), required=False,
+                                                         widget=forms.Select(attrs={'class': "form-control"}))
 
     name = forms.CharField(label='Name', max_length=100, widget=forms.TextInput(attrs={'class': "form-control"}))
     amount = forms.DecimalField(label='Amount', min_value=1, required=True,

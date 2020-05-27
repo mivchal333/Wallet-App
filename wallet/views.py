@@ -1,9 +1,7 @@
 from django.http import Http404, HttpResponseForbidden
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.views.generic import TemplateView
 
-from datetime import datetime
 from .forms import AddIncomeForm, AddExpenseForm, AddCategoryForm
 from .forms import AddWalletForm
 from .models import Wallet, Income, Expense, Category
@@ -132,7 +130,7 @@ def incomeAdd(request, wallet_id):
         wallet = Wallet.objects.get(pk=wallet_id)
         if request.method == 'POST':
             # create a form instance and populate it with data from the request:
-            form = AddIncomeForm(request.POST)
+            form = AddIncomeForm(request.POST, user=request.user)
             # check whether it's valid:
             if form.is_valid():
                 wallet = Wallet.objects.get(pk=wallet_id)
@@ -150,7 +148,7 @@ def incomeAdd(request, wallet_id):
 
         # if a GET (or any other method) we'll create a blank form
         else:
-            form = AddIncomeForm(request.user)
+            form = AddIncomeForm(user=request.user)
 
         return render(request, 'wallet/incomeAdd.html', {'form': form, 'wallet_id': wallet_id, 'wallet': wallet})
     else:
@@ -205,12 +203,12 @@ def expenseDetails(request, expense_id):
 def expenseAdd(request, wallet_id):
     if request.user.is_authenticated:
         try:
-            wallet = Wallet.objects.get(pk=wallet_id)
+            wallet = Wallet.objects.get(pk=wallet_id, user=request.user)
         except Expense.DoesNotExist:
             raise Http404("Wallet does not exist")
 
         if request.method == 'POST':
-            form = AddExpenseForm(request.POST)
+            form = AddExpenseForm(request.POST, user=request.user)
             if form.is_valid():
                 wallet = Wallet.objects.get(pk=wallet_id)
 
@@ -228,7 +226,7 @@ def expenseAdd(request, wallet_id):
 
         # if a GET (or any other method) we'll create a blank form
         else:
-            form = AddExpenseForm(request.user)
+            form = AddExpenseForm(user=request.user)
 
         return render(request, 'wallet/expenseAdd.html', {'form': form, 'wallet_id': wallet_id, 'wallet': wallet})
     else:
