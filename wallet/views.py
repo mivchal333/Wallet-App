@@ -2,7 +2,7 @@ from django.http import Http404, HttpResponseForbidden
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
-from .forms import AddIncomeForm, AddExpenseForm, AddCategoryForm
+from .forms import IncomeForm, AddExpenseForm, AddCategoryForm
 from .forms import WalletForm
 from .models import Wallet, Income, Expense, Category
 from .service import getIncomesSumInThisMonth, getExpansesSumInThisMonth, updateWalletAmount, getExpansesSumInLastWeek, \
@@ -58,7 +58,7 @@ def walletDetails(request, wallet_id):
             'lastExpenses': last_expenses,
             'income_sum': income_sum,
         }
-        return render(request, 'wallet/walletDetails.html', context)
+        return render(request, 'wallet/wallet/walletDetails.html', context)
     else:
         return redirect("/login")
 
@@ -83,7 +83,7 @@ def addWallet(request):
         else:
             form = WalletForm()
 
-        return render(request, 'wallet/walletForm.html', {'form': form})
+        return render(request, 'wallet/wallet/walletForm.html', {'form': form})
     else:
         return redirect("/login")
 
@@ -95,7 +95,7 @@ def walletList(request):
         context = {
             'walletList': wallet_list,
         }
-        return render(request, 'wallet/walletList.html', context)
+        return render(request, 'wallet/wallet/walletList.html', context)
     else:
         return redirect("/login")
 
@@ -123,7 +123,7 @@ def updateWallet(request, wallet_id):
         else:
             form = WalletForm(instance=wallet)
 
-        return render(request, 'wallet/walletForm.html', {'form': form})
+        return render(request, 'wallet/wallet/walletForm.html', {'form': form})
 
         # Income
 
@@ -135,7 +135,7 @@ def incomeDetails(request, income_id):
         except Income.DoesNotExist:
             raise Http404("Income does not exist")
         context = {'income': income}
-        return render(request, 'wallet/incomeDetails.html', context)
+        return render(request, 'wallet/income/incomeDetails.html', context)
     else:
         return redirect("/login")
 
@@ -147,16 +147,17 @@ def incomeAdd(request, wallet_id):
         wallet = Wallet.objects.get(pk=wallet_id)
         if request.method == 'POST':
             # create a form instance and populate it with data from the request:
-            form = AddIncomeForm(request.POST, user=request.user)
+            form = IncomeForm(request.POST, user=request.user)
             # check whether it's valid:
             if form.is_valid():
                 wallet = Wallet.objects.get(pk=wallet_id)
 
                 source = form.cleaned_data['source']
                 amount = form.cleaned_data['amount']
-                date = form.cleaned_data['date']
+                executionDate = form.cleaned_data['executionDate']
                 category = form.cleaned_data['category']
-                new_income = Income(source=source, amount=amount, executionDate=date, category=category, wallet=wallet,
+                new_income = Income(source=source, amount=amount, executionDate=executionDate, category=category,
+                                    wallet=wallet,
                                     user=request.user)
                 updateWalletAmount(wallet_id, amount, 'add')
                 new_income.save()
@@ -165,9 +166,10 @@ def incomeAdd(request, wallet_id):
 
         # if a GET (or any other method) we'll create a blank form
         else:
-            form = AddIncomeForm(user=request.user)
+            form = IncomeForm(user=request.user)
 
-        return render(request, 'wallet/incomeAdd.html', {'form': form, 'wallet_id': wallet_id, 'wallet': wallet})
+        return render(request, 'wallet/income/incomeForm.html',
+                      {'form': form, 'wallet_id': wallet_id, 'wallet': wallet})
     else:
         return redirect("/login")
 
@@ -188,7 +190,7 @@ def incomeList(request):
             'labels': labels,
             'data': data,
         }
-        return render(request, 'wallet/incomeList.html', context)
+        return render(request, 'wallet/income/incomeList.html', context)
     else:
         return redirect("/login")
 
@@ -204,6 +206,31 @@ def deleteIncome(request, income_id):
         raise Http404("Income does not exist")
 
 
+def updateIncome(request, income_id):
+    if request.user.is_authenticated:
+        income = Income.objects.get(pk=income_id)
+
+        form = IncomeForm(request.POST, user=request.user)
+        if request.method == 'POST':
+            if form.is_valid():
+                source = form.cleaned_data['source']
+                amount = form.cleaned_data['amount']
+                execution_date = form.cleaned_data['executionDate']
+                category = form.cleaned_data['category']
+                income.source = source
+                income.amount = amount
+                income.executionDate = execution_date
+                income.category = category
+
+                income.save()
+
+            return redirect('/wallet/income/' + str(income_id))
+        else:
+            form = IncomeForm(instance=income, user=request.user)
+
+        return render(request, 'wallet/income/incomeForm.html', {'form': form, 'wallet': income.wallet})
+
+
 # Expense
 def expenseDetails(request, expense_id):
     if request.user.is_authenticated:
@@ -212,7 +239,7 @@ def expenseDetails(request, expense_id):
         except Expense.DoesNotExist:
             raise Http404("expense does not exist")
         context = {'expense': expense}
-        return render(request, 'wallet/expenseDetails.html', context)
+        return render(request, 'wallet/expense/expenseDetails.html', context)
     else:
         return redirect("/login")
 
@@ -245,7 +272,8 @@ def expenseAdd(request, wallet_id):
         else:
             form = AddExpenseForm(user=request.user)
 
-        return render(request, 'wallet/expenseAdd.html', {'form': form, 'wallet_id': wallet_id, 'wallet': wallet})
+        return render(request, 'wallet/expense/expenseAdd.html',
+                      {'form': form, 'wallet_id': wallet_id, 'wallet': wallet})
     else:
         return redirect("/login")
 
@@ -257,7 +285,7 @@ def expenseList(request):
         context = {
             'expenseList': expense_list,
         }
-        return render(request, 'wallet/expenseList.html', context)
+        return render(request, 'wallet/expense/expenseList.html', context)
     else:
         return redirect("/login")
 
@@ -281,7 +309,7 @@ def categoryDetails(request, category_id):
         except Category.DoesNotExist:
             raise Http404("category does not exist")
         context = {'category': category}
-        return render(request, 'wallet/categoryDetails.html', context)
+        return render(request, 'wallet/category/categoryDetails.html', context)
     else:
         return redirect("/login")
 
@@ -301,7 +329,7 @@ def categoryAdd(request):
         else:
             form = AddCategoryForm()
 
-        return render(request, 'wallet/categoryAdd.html', {'form': form})
+        return render(request, 'wallet/category/categoryAdd.html', {'form': form})
     else:
         return redirect("/login")
 
@@ -313,7 +341,7 @@ def categoryList(request):
         context = {
             'categoryList': category_list,
         }
-        return render(request, 'wallet/categoryList.html', context)
+        return render(request, 'wallet/category/categoryList.html', context)
     else:
         return redirect("/login")
 

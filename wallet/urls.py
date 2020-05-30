@@ -13,6 +13,7 @@ urlpatterns = [
     path('income/', views.incomeList, name='incomeList'),
     path('income/<int:income_id>/', views.incomeDetails, name='incomeDetail'),
     path('income/<int:income_id>/delete', views.deleteIncome, name='incomeDelete'),
+    path('income/<int:income_id>/update', views.updateIncome, name='incomeUpdate'),
     path('expense/', views.expenseList, name='expenseList'),
     path('expense/<int:expense_id>/', views.expenseDetails, name='expenseDetails'),
     path('<int:wallet_id>/expense/add', views.expenseAdd, name='expenseAdd'),
