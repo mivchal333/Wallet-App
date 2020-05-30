@@ -40,6 +40,8 @@
                 {% endif %}
             </p>
         </div>
+        <a href="/wallet/expense/{{ expense.id }}/update" class="btn btn-warning button-right-flow"
+           role="button" aria-pressed="true">Edit</a>
         <a href="/wallet/expense/{{ expense.id }}/delete" class="btn btn-danger button-right-flow active"
            role="button" aria-pressed="true">Delete</a>
         <a type="button" class="btn btn-primary" href="/wallet/{{ expense.wallet.id }}">Go to Wallet</a>

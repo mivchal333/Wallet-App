@@ -1,6 +1,7 @@
 {% extends "wallet/base.html" %}
 {% block content %}
-    <h3>Adding expense to: {{ wallet.name }}</h3>
+    <h3>Set expense details</h3>
+    <h4>Wallet: {{ wallet.name }}</h4>
     <form method="post">
         {% csrf_token %}
         {% for field in form %}
@@ -12,7 +13,8 @@
                 {% endif %}
             </div>
         {% endfor %}
-        <input type="submit" class="btn btn-primary" value="Create">
+        <input type="submit" class="btn btn-primary" value="Submit">
         <a type="button" class="btn btn-secondary" href="/wallet/{{ wallet_id }}">Go to Wallet</a>
+        <a type="button" class="btn btn-secondary" href="/wallet/expense">Go to Expenses</a>
     </form>
 {% endblock content %}

@@ -1,10 +1,8 @@
-import datetime
-
 from django import forms
 from django.forms import TextInput
 from django.utils.translation import gettext_lazy as _
 
-from wallet.models import Category, Wallet, Income
+from wallet.models import Category, Wallet, Income, Expense
 
 
 class WalletForm(forms.ModelForm):
@@ -39,21 +37,25 @@ class IncomeForm(forms.ModelForm):
         }
 
 
-class AddExpenseForm(forms.Form):
+class ExpenseForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
-        super(AddExpenseForm, self).__init__(*args, **kwargs)
+        super(ExpenseForm, self).__init__(*args, **kwargs)
         self.fields['category'] = forms.ModelChoiceField(queryset=Category.objects.filter(user=user), required=False,
                                                          widget=forms.Select(attrs={'class': "form-control"}))
 
-    name = forms.CharField(label='Name', max_length=100, widget=forms.TextInput(attrs={'class': "form-control"}))
-    amount = forms.DecimalField(label='Amount', min_value=1, required=True,
-                                widget=forms.TextInput(attrs={'class': "form-control"}))
-    executionDate = forms.DateTimeField(initial=datetime.date.today, label='Date',
-                                        widget=forms.TextInput(attrs={'class': "form-control"}))
-    category = forms.ModelChoiceField(required=False, queryset=Category.objects.filter(user__id=1),
-                                      widget=forms.Select(attrs={'class': "form-control"}))
-    done = forms.BooleanField(required=False)
+    class Meta:
+        model = Expense
+        fields = ['name', 'amount', 'executionDate', 'category', 'done']
+        labels = {
+            'executionDate': _("Execution Date")
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={'class': "form-control"}),
+            'amount': forms.TextInput(attrs={'class': "form-control"}),
+            'executionDate': forms.DateTimeInput(attrs={'class': "form-control"}),
+            'category': forms.Select(attrs={'class': "form-control"})
+        }
 
 
 class AddCategoryForm(forms.Form):

@@ -2,7 +2,7 @@ from django.http import Http404, HttpResponseForbidden
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
-from .forms import IncomeForm, AddExpenseForm, AddCategoryForm
+from .forms import IncomeForm, ExpenseForm, AddCategoryForm
 from .forms import WalletForm
 from .models import Wallet, Income, Expense, Category
 from .service import getIncomesSumInThisMonth, getExpansesSumInThisMonth, updateWalletAmount, getExpansesSumInLastWeek, \
@@ -252,7 +252,7 @@ def expenseAdd(request, wallet_id):
             raise Http404("Wallet does not exist")
 
         if request.method == 'POST':
-            form = AddExpenseForm(request.POST, user=request.user)
+            form = ExpenseForm(request.POST, user=request.user)
             if form.is_valid():
                 wallet = Wallet.objects.get(pk=wallet_id)
 
@@ -270,9 +270,9 @@ def expenseAdd(request, wallet_id):
 
         # if a GET (or any other method) we'll create a blank form
         else:
-            form = AddExpenseForm(user=request.user)
+            form = ExpenseForm(user=request.user)
 
-        return render(request, 'wallet/expense/expenseAdd.html',
+        return render(request, 'wallet/expense/expenseForm.html',
                       {'form': form, 'wallet_id': wallet_id, 'wallet': wallet})
     else:
         return redirect("/login")
@@ -298,6 +298,33 @@ def deleteExpense(request, expense_id):
         return expenseList(request)
     else:
         raise Http404("Expense does not exist")
+
+
+def updateExpense(request, expense_id):
+    if request.user.is_authenticated:
+        expense = Expense.objects.get(pk=expense_id)
+
+        form = ExpenseForm(request.POST, user=request.user)
+        if request.method == 'POST':
+            if form.is_valid():
+                name = form.cleaned_data['name']
+                amount = form.cleaned_data['amount']
+                execution_date = form.cleaned_data['executionDate']
+                category = form.cleaned_data['category']
+                done = form.cleaned_data['done']
+
+                expense.name = name
+                expense.amount = amount
+                expense.execution_date = execution_date
+                expense.category = category
+                expense.done = done
+                expense.save()
+
+            return redirect('/wallet/expense/' + str(expense_id))
+        else:
+            form = ExpenseForm(instance=expense, user=request.user)
+
+        return render(request, 'wallet/expense/expenseForm.html', {'form': form, 'wallet': expense.wallet})
 
 
 # Category
