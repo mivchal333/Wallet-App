@@ -1,15 +1,19 @@
 import datetime
 
 from django import forms
+from django.forms import TextInput
 
-from wallet.models import Category
+from wallet.models import Category, Wallet
 
 
-class AddWalletForm(forms.Form):
-    name = forms.CharField(label='Name', max_length=100, widget=forms.TextInput(attrs={'class': "form-control"}))
-    amount = forms.DecimalField(label='Initial amount', min_value=0, initial=0,
-                                widget=forms.TextInput(attrs={'class': "form-control"}))
-
+class WalletForm(forms.ModelForm):
+    class Meta:
+        model = Wallet
+        fields = ['name', 'amount']
+        widgets = {
+            'name': TextInput(attrs={'class': "form-control"}),
+            'amount': forms.NumberInput(attrs={'class': "form-control"})
+        }
 
 class AddIncomeForm(forms.Form):
 

@@ -1,7 +1,7 @@
 {% extends "wallet/base.html" %}
 {% block content %}
-    <h3>Add wallet</h3>
-    <form action="/wallet/add/" method="post">
+    <h3>Set Wallet details</h3>
+    <form method="post">
         {% csrf_token %}
         {% for field in form %}
             <div class="form-group wallet-add-wrapper">
@@ -12,7 +12,7 @@
                 {% endif %}
             </div>
         {% endfor %}
-        <input type="submit" class="btn btn-primary" value="Create">
+        <input type="submit" class="btn btn-primary" value="Submit">
         <a href="/wallet" class="btn btn-secondary active" role="button" aria-pressed="true">Back</a>
     </form>
 {% endblock content %}

@@ -5,8 +5,12 @@
 
 {% block content %}
     {% if wallet %}
-        <a href="/wallet/{{ wallet.id }}/delete" class="btn btn-danger button-right-flow active delete-button-right"
-           role="button" aria-pressed="true">Delete</a>
+        <div class="header-action-section">
+            <a href="/wallet/{{ wallet.id }}/delete" class="btn btn-danger button-right-flow"
+               role="button" aria-pressed="true">Delete</a>
+            <a href="/wallet/{{ wallet.id }}/update" class="btn btn-warning button-right-flow"
+               role="button" aria-pressed="true">Edit</a>
+        </div>
         <h3>Wallet: {{ wallet.name }}</h3>
         <h4>Actual amount: {{ wallet.amount }}</h4>
         <h5>Creator: {{ wallet.user }}</h5>

@@ -1,7 +1,7 @@
 {% extends "wallet/base.html" %}
 {% block content %}
     <h3>Add category</h3>
-    <form action="/wallet/category/add" method="post">
+    <form method="post">
         {% csrf_token %}
         {% for field in form %}
             <div class="form-group category-add-wrapper">

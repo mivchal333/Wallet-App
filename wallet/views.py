@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
 from .forms import AddIncomeForm, AddExpenseForm, AddCategoryForm
-from .forms import AddWalletForm
+from .forms import WalletForm
 from .models import Wallet, Income, Expense, Category
 from .service import getIncomesSumInThisMonth, getExpansesSumInThisMonth, updateWalletAmount, getExpansesSumInLastWeek, \
     getIncomesSumInLastWeek
@@ -68,7 +68,7 @@ def addWallet(request):
         # if this is a POST request we need to process the form data
         if request.method == 'POST':
             # create a form instance and populate it with data from the request:
-            form = AddWalletForm(request.POST)
+            form = WalletForm(request.POST)
             # check whether it's valid:
             if form.is_valid():
                 name = form.cleaned_data['name']
@@ -81,9 +81,9 @@ def addWallet(request):
 
         # if a GET (or any other method) we'll create a blank form
         else:
-            form = AddWalletForm()
+            form = WalletForm()
 
-        return render(request, 'wallet/walletAdd.html', {'form': form})
+        return render(request, 'wallet/walletForm.html', {'form': form})
     else:
         return redirect("/login")
 
@@ -108,7 +108,24 @@ def deleteWallet(request, wallet_id):
         raise Http404("Wallet does not exist")
 
 
-# Income
+def updateWallet(request, wallet_id):
+    if request.user.is_authenticated:
+        wallet = Wallet.objects.get(pk=wallet_id)
+        form = WalletForm(request.POST)
+        if request.method == 'POST':
+            if form.is_valid():
+                name = form.cleaned_data['name']
+                amount = form.cleaned_data['amount']
+                wallet.name = name
+                wallet.amount = amount
+                wallet.save()
+            return redirect("/wallet/" + str(wallet_id))
+        else:
+            form = WalletForm(instance=wallet)
+
+        return render(request, 'wallet/walletForm.html', {'form': form})
+
+        # Income
 
 
 def incomeDetails(request, income_id):
