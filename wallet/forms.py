@@ -58,7 +58,11 @@ class ExpenseForm(forms.ModelForm):
         }
 
 
-class AddCategoryForm(forms.Form):
-    name = forms.CharField(label='Name', max_length=100, widget=forms.TextInput(attrs={'class': "form-control"}))
-    priority = forms.DecimalField(label='Priority', min_value=1, required=True, max_value=10,
-                                  widget=forms.TextInput(attrs={'class': "form-control", 'type': 'number'}))
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name', 'priority']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': "form-control"}),
+            'priority': forms.TextInput(attrs={'class': "form-control", 'type': 'number'}),
+        }

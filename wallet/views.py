@@ -2,7 +2,7 @@ from django.http import Http404, HttpResponseForbidden
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
-from .forms import IncomeForm, ExpenseForm, AddCategoryForm
+from .forms import IncomeForm, ExpenseForm, CategoryForm
 from .forms import WalletForm
 from .models import Wallet, Income, Expense, Category
 from .service import getIncomesSumInThisMonth, getExpansesSumInThisMonth, updateWalletAmount, getExpansesSumInLastWeek, \
@@ -344,7 +344,7 @@ def categoryDetails(request, category_id):
 def categoryAdd(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            form = AddCategoryForm(request.POST)
+            form = CategoryForm(request.POST)
             if form.is_valid():
                 name = form.cleaned_data['name']
                 priority = form.cleaned_data['priority']
@@ -354,9 +354,9 @@ def categoryAdd(request):
 
         # if a GET (or any other method) we'll create a blank form
         else:
-            form = AddCategoryForm()
+            form = CategoryForm()
 
-        return render(request, 'wallet/category/categoryAdd.html', {'form': form})
+        return render(request, 'wallet/category/categoryForm.html', {'form': form})
     else:
         return redirect("/login")
 
@@ -383,3 +383,23 @@ def deleteCategory(request, category_id):
         return categoryList(request)
     else:
         raise Http404("Category does not exist")
+
+
+def updateCategory(request, category_id):
+    if request.user.is_authenticated:
+        category = Category.objects.get(pk=category_id)
+
+        form = CategoryForm(request.POST)
+        if request.method == 'POST':
+            if form.is_valid():
+                name = form.cleaned_data['name']
+                priority = form.cleaned_data['priority']
+                category.name = name
+                category.priority = priority
+                category.save()
+
+            return redirect('/wallet/category/' + str(category_id))
+        else:
+            form = CategoryForm(instance=category)
+
+        return render(request, 'wallet/expense/expenseForm.html', {'form': form})
