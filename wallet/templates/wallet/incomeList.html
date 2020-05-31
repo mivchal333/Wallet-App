@@ -25,7 +25,8 @@ $(document).ready(function() {
                     }
                 } );
             } );
-        }
+        },
+                "order": [[ 0, "desc" ]]
     });
 
 } );
@@ -38,10 +39,10 @@ $(document).ready(function() {
         <table id="table_incomes" class="ui celled table">
             <thead>
                 <tr>
+                    <th>Date</th>
                     <th>Source</th>
                     <th>Amount</th>
                     <th>Category</th>
-                    <th>Date</th>
                     <th>Wallet</th>
                     <th>Details</th>
                 </tr>
@@ -49,10 +50,10 @@ $(document).ready(function() {
             <tbody>
             {% for income in incomeList %}
                 <tr>
+                    <td>{{ income.createdAt }}</td>
                     <td>{{ income.source }}</td>
                     <td>${{ income.amount }}</td>
                     <td>{{ income.category.name }}</td>
-                    <td>{{ income.createdAt }}</td>
                     <td>{{ income.wallet.name }}</td>
                     <td><a href="/wallet/income/{{ income.id }}" class="btn-sm btn-primary">See details</a></td>
                 </tr>
@@ -60,10 +61,10 @@ $(document).ready(function() {
             </tbody>
             <tfoot>
                 <tr>
+                    <th>Date</th>
                     <th>Source</th>
                     <th>Amount</th>
                     <th>Category</th>
-                    <th>Date</th>
                     <th>Wallet</th>
                     <th>Details</th>
                 </tr>
