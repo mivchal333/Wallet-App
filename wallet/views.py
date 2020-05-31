@@ -1,3 +1,5 @@
+from itertools import chain
+
 from django.http import Http404, HttpResponseForbidden
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -125,7 +127,34 @@ def updateWallet(request, wallet_id):
 
         return render(request, 'wallet/wallet/walletForm.html', {'form': form})
 
-        # Income
+
+def walletTimeline(request, wallet_id):
+    if request.user.is_authenticated:
+        try:
+            wallet = Wallet.objects.get(pk=wallet_id)
+        except Wallet.DoesNotExist:
+            raise Http404("Wallet does not exist")
+        incomes = Income.objects.filter(wallet=wallet_id, executionDate__isnull=False) \
+            .order_by('-createdAt')
+        expenses = Expense.objects.filter(wallet=wallet_id, done=True, executionDate__isnull=False) \
+            .order_by('-createdAt')
+
+        action_list = sorted(
+            chain(incomes, expenses),
+            key=lambda instance: instance.createdAt
+        )
+
+        context = {
+            'wallet': wallet,
+            'actionList': action_list,
+
+        }
+        return render(request, 'wallet/wallet/timeline.html', context)
+    else:
+        return redirect("/login")
+
+
+# Income
 
 
 def incomeDetails(request, income_id):

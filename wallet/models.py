@@ -1,5 +1,7 @@
-from django.db import models
+from datetime import datetime
+
 from django.contrib.auth.models import User
+from django.db import models
 
 
 class Category(models.Model):
@@ -28,7 +30,7 @@ class Expense(models.Model):
     amount = models.FloatField(default='0')
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now_add=True)
-    executionDate = models.DateTimeField(blank=True, null=True)
+    executionDate = models.DateTimeField(blank=True, null=True, default=datetime.now)
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE)
@@ -43,7 +45,7 @@ class Income(models.Model):
     amount = models.FloatField(default='0')
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now_add=True)
-    executionDate = models.DateTimeField(blank=True, null=True)
+    executionDate = models.DateTimeField(blank=True, null=True, default=datetime.now)
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
     user = models.ForeignKey(User, models.SET_NULL, null=True, blank=True)
     category = models.ForeignKey(Category, models.SET_NULL, null=True, blank=True)

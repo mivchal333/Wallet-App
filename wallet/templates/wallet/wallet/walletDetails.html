@@ -6,6 +6,8 @@
 {% block content %}
     {% if wallet %}
         <div class="header-action-section">
+            <a href="/wallet/{{ wallet.id }}/timeline" class="btn btn-success button-right-flow"
+               role="button" aria-pressed="true">View Timeline</a>
             <a href="/wallet/{{ wallet.id }}/delete" class="btn btn-danger button-right-flow"
                role="button" aria-pressed="true">Delete</a>
             <a href="/wallet/{{ wallet.id }}/update" class="btn btn-warning button-right-flow"
