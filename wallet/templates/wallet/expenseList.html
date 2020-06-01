@@ -1,0 +1,76 @@
+{% extends "wallet/base.html" %}
+
+
+{% block scripts %}
+    <script>
+$(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    $('#table_expense tfoot th').each( function () {
+        var title = $(this).text();
+        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+    } );
+
+    // DataTable
+    var table = $('#table_expense').DataTable({
+        initComplete: function () {
+            // Apply the search
+            this.api().columns().every( function () {
+                var that = this;
+
+                $( 'input', this.footer() ).on( 'keyup change clear', function () {
+                    if ( that.search() !== this.value ) {
+                        that
+                            .search( this.value )
+                            .draw();
+                    }
+                } );
+            } );
+        },
+        "order": [[ 0, "desc" ]]
+    });
+
+} );
+    </script>
+{% endblock scripts%}
+
+{% block content %}
+    <h3>Here you can see your expenses</h3>
+    <div>
+        <table id="table_expense" class="ui celled table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Source</th>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>Wallet</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for expense in expenseList %}
+                <tr>
+                    <td>{{ expense.createdAt }}</td>
+                    <td>{{ expense.name }}</td>
+                    <td>${{expense.amount }}</td>
+                    <td>{{ expense.category.name }}</td>
+                    <td>{{ expense.wallet.name }}</td>
+                    <td><a href="/wallet/income/{{ expense.id }}" class="btn-sm btn-primary">See details</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Date</th>
+                    <th>Source</th>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>Wallet</th>
+                    <th></th>
+                </tr>
+        </tfoot>
+    </table>
+    </div>
+    </div>
+    <br/>
+{% endblock content %}
