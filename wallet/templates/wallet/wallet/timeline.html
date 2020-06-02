@@ -1,5 +1,12 @@
 {% extends "wallet/base.html" %}
 {% block content %}
+    <div class="timeline-limit-picker">
+        <span>Show latest:</span>
+        <a href="/wallet/{{ wallet.id }}/timeline?limit=10" class="badge badge-primary">10</a>
+        <a href="/wallet/{{ wallet.id }}/timeline?limit=20" class="badge badge-primary">20</a>
+        <a href="/wallet/{{ wallet.id }}/timeline?limit=50" class="badge badge-primary">50</a>
+        <a href="/wallet/{{ wallet.id }}/timeline?limit=100" class="badge badge-primary">100</a>
+    </div>
     <div class="container mt-5 mb-5">
         <div class="row">
             <div class="col-md-6 offset-md-3">

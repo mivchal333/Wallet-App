@@ -143,3 +143,12 @@ ul.timeline > li:before {
     color: #007bff;
 
 }
+
+.timeline-limit-picker {
+    position: fixed;
+    right: 20px;
+}
+
+.timeline-limit-picker span {
+    margin-right: 5px;
+}

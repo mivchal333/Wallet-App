@@ -134,20 +134,23 @@ def walletTimeline(request, wallet_id):
             wallet = Wallet.objects.get(pk=wallet_id)
         except Wallet.DoesNotExist:
             raise Http404("Wallet does not exist")
+
+        defaultLimit = 50
+        limitParam = int(request.GET.get('limit', defaultLimit))
         incomes = Income.objects.filter(wallet=wallet_id, executionDate__isnull=False) \
-            .order_by('-createdAt')
+                      .order_by('-createdAt')[:limitParam]
+
         expenses = Expense.objects.filter(wallet=wallet_id, done=True, executionDate__isnull=False) \
-            .order_by('-createdAt')
+                       .order_by('-createdAt')[:limitParam]
 
         action_list = sorted(
             chain(incomes, expenses),
             key=lambda instance: instance.createdAt
-        )
+        )[:limitParam]
 
         context = {
             'wallet': wallet,
             'actionList': action_list,
-
         }
         return render(request, 'wallet/wallet/timeline.html', context)
     else:
