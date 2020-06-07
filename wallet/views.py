@@ -12,6 +12,13 @@ from .service import getIncomesSumInThisMonth, getExpansesSumInThisMonth, update
     getIncomesSumInLastWeek
 
 
+# Contact
+
+def contact(request):
+    context = {}
+    context['api_key'] = 'AIzaSyAN-F4MEa1DFERJwgxQmI5VcX4OgMlHFd0'
+    return render(request, 'wallet/about.html', context)
+
 # Home
 def home(request):
     if request.user.is_authenticated:
