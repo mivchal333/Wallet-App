@@ -3,40 +3,45 @@
 
 {% block scripts %}
     <script>
-$(document).ready(function() {
-    // Setup - add a text input to each footer cell
-    $('#table_incomes tfoot th').each( function () {
-        var title = $(this).text();
-        $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
-    } );
-
-    // DataTable
-    var table = $('#table_incomes').DataTable({
-        initComplete: function () {
-            // Apply the search
-            this.api().columns().every( function () {
-                var that = this;
-
-                $( 'input', this.footer() ).on( 'keyup change clear', function () {
-                    if ( that.search() !== this.value ) {
-                        that
-                            .search( this.value )
-                            .draw();
-                    }
-                } );
-            } );
+    $(document).ready(function() {
+        // DataTable
+        var table = $('#table_incomes').DataTable({
+            "footerCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+            // Remove the formatting to get integer data for summation
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+            // Total over all pages
+            total = api
+                .column( 2 )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            // Total over this page
+            pageTotal = api
+                .column(2, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+            // Update footer
+            $( api.column( 4 ).footer() ).html(
+                '$'+pageTotal+' ($'+ total +' total)'
+            );
         },
-                "order": [[ 0, "desc" ]]
+        });
     });
-
-} );
     </script>
 {% endblock scripts%}
 
 {% block content %}
     <h3>Here you can see your incomes</h3>
-    <div>
-        <table id="table_incomes" class="ui celled table">
+        <table id="table_incomes" class="ui celled table" style="width:100%">
             <thead>
                 <tr>
                     <th>Date</th>
@@ -50,7 +55,7 @@ $(document).ready(function() {
             <tbody>
             {% for income in incomeList %}
                 <tr>
-                    <td>{{ income.createdAt }}</td>
+                    <td >{{income.createdAt| date:"M d, Y"}}</td>
                     <td>{{ income.source }}</td>
                     <td>${{ income.amount }}</td>
                     <td>{{ income.category.name }}</td>
@@ -60,17 +65,11 @@ $(document).ready(function() {
             {% endfor %}
             </tbody>
             <tfoot>
-                <tr>
-                    <th>Date</th>
-                    <th>Source</th>
-                    <th>Amount</th>
-                    <th>Category</th>
-                    <th>Wallet</th>
-                    <th>Details</th>
-                </tr>
+            <tr>
+                <th colspan="4" style="text-align:right">Total amount:</th>
+                <th colspan="2"></th>
+            </tr>
         </tfoot>
     </table>
-    </div>
-    </div>
     <br/>
 {% endblock content %}
