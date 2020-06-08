@@ -362,7 +362,11 @@ def deleteExpense(request, expense_id):
 
 def updateExpense(request, expense_id):
     if request.user.is_authenticated:
-        expense = Expense.objects.get(pk=expense_id)
+        try:
+            expense = Expense.objects.get(pk=expense_id)
+        except:
+            raise Http404("Expense does not exist")
+
         if expense.user != request.user:
             raise PermissionDenied
         form = ExpenseForm(request.POST, user=request.user)
@@ -438,7 +442,11 @@ def categoryList(request):
 
 def deleteCategory(request, category_id):
     if request.user.is_authenticated:
-        category = Category.objects.get(pk=category_id)
+        try:
+            category = Category.objects.get(pk=category_id)
+        except:
+            raise Http404("category does not exist")
+
         if category.user == request.user:
             category.delete()
         else:
