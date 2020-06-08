@@ -25,7 +25,7 @@
     margin: 0 2px 0 2px;
 }
 
-.income-card, .expense-card {
+.income-card, .expense-card, .category-card {
     margin-top: 20px;
     margin-bottom: 20px;
 }

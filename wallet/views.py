@@ -1,10 +1,11 @@
 from datetime import datetime
 from itertools import chain
 
-from django.http import Http404, HttpResponseForbidden
-from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
+from django.http import Http404
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+
 from .forms import IncomeForm, ExpenseForm, CategoryForm
 from .forms import WalletForm
 from .models import Wallet, Income, Expense, Category
@@ -18,6 +19,7 @@ def contact(request):
     context = {}
     context['api_key'] = 'AIzaSyAN-F4MEa1DFERJwgxQmI5VcX4OgMlHFd0'
     return render(request, 'wallet/about.html', context)
+
 
 # Home
 def home(request):
@@ -84,8 +86,8 @@ def addWallet(request):
             # check whether it's valid:
             if form.is_valid():
                 name = form.cleaned_data['name']
-                amount = form.cleaned_data['amount']
-                new_wallet = Wallet(name=name, amount=amount)
+                description = form.cleaned_data['description']
+                new_wallet = Wallet(name=name, description=description)
                 new_wallet.save()
                 request.user.wallets.add(new_wallet)
 
@@ -139,9 +141,9 @@ def updateWallet(request, wallet_id):
         if request.method == 'POST':
             if form.is_valid():
                 name = form.cleaned_data['name']
-                amount = form.cleaned_data['amount']
+                description = form.cleaned_data['description']
                 wallet.name = name
-                wallet.amount = amount
+                wallet.description = description
                 wallet.save()
             return redirect("/wallet/" + str(wallet_id))
         else:
