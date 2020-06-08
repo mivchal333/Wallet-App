@@ -31,7 +31,7 @@ class IncomeForm(forms.ModelForm):
         }
         widgets = {
             'source': forms.TextInput(attrs={'class': "form-control"}),
-            'amount': forms.TextInput(attrs={'class': "form-control"}),
+            'amount': forms.NumberInput(attrs={'class': "form-control", 'min': '0.01'}),
             'executionDate': forms.DateTimeInput(attrs={'class': "form-control"}),
             'category': forms.Select(attrs={'class': "form-control"})
         }
@@ -52,7 +52,7 @@ class ExpenseForm(forms.ModelForm):
         }
         widgets = {
             'name': forms.TextInput(attrs={'class': "form-control"}),
-            'amount': forms.TextInput(attrs={'class': "form-control"}),
+            'amount': forms.NumberInput(attrs={'class': "form-control", 'min': '0.01'}),
             'executionDate': forms.DateTimeInput(attrs={'class': "form-control"}),
             'category': forms.Select(attrs={'class': "form-control"})
         }
@@ -64,5 +64,5 @@ class CategoryForm(forms.ModelForm):
         fields = ['name', 'priority']
         widgets = {
             'name': forms.TextInput(attrs={'class': "form-control"}),
-            'priority': forms.TextInput(attrs={'class': "form-control", 'type': 'number'}),
+            'priority': forms.TextInput(attrs={'class': "form-control", 'type': 'number', 'min': '1', 'max': '10'}),
         }

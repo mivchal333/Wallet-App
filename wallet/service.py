@@ -1,8 +1,6 @@
 from datetime import datetime, timedelta
-from django.utils import timezone
-import pytz
+
 from django.db.models import Sum
-import decimal
 
 from wallet.models import Income, Expense, Wallet
 
@@ -13,7 +11,6 @@ def getIncomeSum(user):
         return income_sum_all.get('amount__sum')
     else:
         return 0
-
 
 
 def getIncomesSumInThisMonth(user):

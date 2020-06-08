@@ -1,3 +1,4 @@
+from datetime import datetime
 from itertools import chain
 
 from django.http import Http404, HttpResponseForbidden
@@ -134,20 +135,28 @@ def walletTimeline(request, wallet_id):
             wallet = Wallet.objects.get(pk=wallet_id)
         except Wallet.DoesNotExist:
             raise Http404("Wallet does not exist")
-        incomes = Income.objects.filter(wallet=wallet_id, executionDate__isnull=False) \
-            .order_by('-createdAt')
-        expenses = Expense.objects.filter(wallet=wallet_id, done=True, executionDate__isnull=False) \
-            .order_by('-createdAt')
+
+        defaultLimit = 50
+        limitParam = int(request.GET.get('limit', defaultLimit))
+
+        today_date = datetime.today().date()
+
+        incomes = Income.objects.filter(wallet=wallet_id, executionDate__isnull=False,
+                                        executionDate__lte=today_date) \
+                      .order_by('-createdAt')[:limitParam]
+
+        expenses = Expense.objects.filter(wallet=wallet_id, done=True, executionDate__isnull=False,
+                                          executionDate__lte=today_date) \
+                       .order_by('-createdAt')[:limitParam]
 
         action_list = sorted(
             chain(incomes, expenses),
             key=lambda instance: instance.createdAt
-        )
+        )[:limitParam]
 
         context = {
             'wallet': wallet,
             'actionList': action_list,
-
         }
         return render(request, 'wallet/wallet/timeline.html', context)
     else:
