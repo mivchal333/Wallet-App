@@ -145,8 +145,7 @@ ul.timeline > li:before {
 }
 
 .timeline-limit-picker {
-    position: fixed;
-    right: 20px;
+    float: right;
 }
 
 .timeline-limit-picker span {
