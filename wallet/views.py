@@ -10,7 +10,7 @@ from .forms import IncomeForm, ExpenseForm, CategoryForm
 from .forms import WalletForm
 from .models import Wallet, Income, Expense, Category
 from .service import getIncomesSumInThisMonth, getExpansesSumInThisMonth, updateWalletAmount, getExpansesSumInLastWeek, \
-    getIncomesSumInLastWeek
+    getIncomesSumInLastWeek, WalletAction
 
 
 # Contact
@@ -228,7 +228,7 @@ def incomeAdd(request, wallet_id):
                 new_income = Income(source=source, amount=amount, executionDate=executionDate, category=category,
                                     wallet=wallet,
                                     user=request.user)
-                updateWalletAmount(wallet_id, amount, 'add')
+                updateWalletAmount(wallet_id, amount, WalletAction.ADD)
                 new_income.save()
 
                 return HttpResponseRedirect('/wallet/income/' + str(new_income.id))
@@ -272,7 +272,7 @@ def deleteIncome(request, income_id):
             raise Http404("Income does not exist")
         if income.user != request.user:
             raise PermissionDenied
-        updateWalletAmount(income.wallet_id, income.amount, 'subtract')
+        updateWalletAmount(income.wallet_id, income.amount, WalletAction.SUBTRACT)
         income.delete()
         return incomeList(request)
     else:
@@ -346,7 +346,7 @@ def expenseAdd(request, wallet_id):
                 done = form.cleaned_data['done']
                 new_expense = Expense(name=name, amount=amount, executionDate=execution_date, category=category,
                                       wallet=wallet, done=done, user=request.user)
-                updateWalletAmount(wallet_id, amount, 'subtract')
+                updateWalletAmount(wallet_id, amount, WalletAction.SUBTRACT)
                 new_expense.save()
 
                 return HttpResponseRedirect('/wallet/expense/' + str(new_expense.id))
@@ -382,7 +382,7 @@ def deleteExpense(request, expense_id):
 
         if expense.user != request.user:
             raise PermissionDenied
-        updateWalletAmount(expense.wallet_id, expense.amount, 'add')
+        updateWalletAmount(expense.wallet_id, expense.amount, WalletAction.ADD)
         expense.delete()
         return expenseList(request)
     else:
