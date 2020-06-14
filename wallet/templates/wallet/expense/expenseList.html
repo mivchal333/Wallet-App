@@ -1,49 +1,77 @@
 {% extends "wallet/base.html" %}
 
 
-
 {% block scripts %}
     <script>
     $(document).ready(function() {
+        $('.input-daterange1 input').each(function() {
+        $(this).datepicker('clearDates');
+    });
         // DataTable
-        var table = $('#table_expense').DataTable({
-        "footerCallback": function ( row, data, start, end, display ) {
-            var api = this.api(), data;
-            // Remove the formatting to get integer data for summation
-            var intVal = function ( i ) {
-                return typeof i === 'string' ?
-                    i.replace(/[\$,]/g, '')*1 :
-                    typeof i === 'number' ?
-                        i : 0;
-            };
-            // Total over all pages
-            total = api
-                .column( 2 )
-                .data()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-            // Total over this page
-            pageTotal = api
-                .column(2, { page: 'current'} )
-                .data()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-            // Update footer
-            $( api.column( 4 ).footer() ).html(
-                '$'+pageTotal+' ($'+ total +' total)'
-            );
-        },
-            "order": [[ 0, "desc" ]]
+        var oTable = $('#table_expense').DataTable({
+            "footerCallback": function (row, data, start, end, display) {
+                var api = this.api(), data;
+                // Remove the formatting to get integer data for summation
+                var intVal = function (i) {
+                    return typeof i === 'string' ?
+                        i.replace(/[\$,]/g, '') * 1 :
+                        typeof i === 'number' ?
+                            i : 0;
+                };
+                // Total over all pages
+                total = api
+                    .column(2)
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                // Total over this page
+                pageTotal = api
+                    .column(2, {page: 'current'})
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+                // Update footer
+                $(api.column(4).footer()).html(
+                    '$' + pageTotal + ' ($' + total + ' total)'
+                );
+            },
+        });
+        // Extend dataTables search
+        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+            var min = $('#min-date-e').datepicker('getDate');
+            var max = $('#max-date-e').datepicker('getDate');
+            var createdAt = data[0] || 0; // Our date column in the table
+            if ((min == "" || max == "") || (moment(createdAt).isSameOrAfter(min) && moment(createdAt).isSameOrBefore(max))){
+                return true;
+            }
+        return false;
+        });
+        // Re-draw the table when the a date range filter changes
+        $('.date-range-filter').change(function() {
+            $('#table_expense').DataTable().draw();
         });
     });
     </script>
 {% endblock scripts%}
 
+
 {% block content %}
     <h3>Here you can see your expenses</h3>
-    <div>
+    <div class="container">
+        <div class="col-md-4 pull-right">
+        </br>
+        <h5>Date Range Search:</h5>
+            <div class="input-group input-daterange1">
+                <input class="form-control date-range-filter" data-date-format="dd-mm-yyyy" id="min-date-e" placeholder="From:" type="text">
+                <input class="form-control date-range-filter" data-date-format="dd-mm-yyyy" id="max-date-e" placeholder="To:" type="text">
+            </div>
+        </div>
+    </div>
+    </br>
+    </br>
+
         <table id="table_expense" class="ui celled table">
             <thead>
                 <tr>
@@ -58,7 +86,7 @@
             <tbody>
             {% for expense in expenseList %}
                 <tr>
-                    <td>{{ expense.createdAt }}</td>
+                    <td>{{ expense.createdAt | date:"M d, Y"}}</td>
                     <td>{{ expense.name }}</td>
                     <td>${{expense.amount }}</td>
                     <td>{{ expense.category.name }}</td>
@@ -66,15 +94,11 @@
                     <td><a href="/wallet/income/{{ expense.id }}" class="btn-sm btn-primary">See details</a></td>
                 </tr>
             {% endfor %}
-            </tbody>
-            <tfoot>
+            </tbody>            <tfoot>
             <tr>
                 <th colspan="4" style="text-align:right">Total amount:</th>
                 <th colspan="2"></th>
             </tr>
         </tfoot>
     </table>
-    </div>
-    </div>
-    <br/>
 {% endblock content %}
