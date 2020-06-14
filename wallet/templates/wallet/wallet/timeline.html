@@ -1,15 +1,27 @@
 {% extends "wallet/base.html" %}
+
+
 {% block content %}
+    <div class="timeline-limit-picker">
+        <span>Show latest:</span>
+        <a href="/wallet/{{ wallet.id }}/timeline?limit=10" class="badge badge-primary">10</a>
+        <a href="/wallet/{{ wallet.id }}/timeline?limit=20" class="badge badge-primary">20</a>
+        <a href="/wallet/{{ wallet.id }}/timeline?limit=50" class="badge badge-primary">50</a>
+        <a href="/wallet/{{ wallet.id }}/timeline?limit=100" class="badge badge-primary">100</a>
+    </div>
     <div class="container mt-5 mb-5">
         <div class="row">
             <div class="col-md-6 offset-md-3">
                 <h3>Here you can see wallet timeline</h3>
                 <h4>Latest Operations in: <span class="wallet-name"> {{ wallet.name }}</span></h4>
+                <p>Shows only done operations</p>
                 <ul class="timeline">
                     {% for action in actionList %}
-                        <li class="action-timeline-item">
-                            <span class="action-name">{{ action.name }}{{ action.source }}</span>
-                            <a href="#" class="float-right">{{ action.executionDate }}</a>
+                        <li class="action-timeline-item {% if action.done %}expense-item{% endif %}">
+                            <a href="/wallet/{% if action.done %}expense{% else %}income{% endif %}/{{ action.id }}"
+                               class="action-name">{{ action.name }}{{ action.source }}</a>
+                            <a href="#" class="float-right">{{ action.amount }}</a>
+                            <span>Executed on: <b>{{ action.executionDate }}</b></span>
                             <span>Created on: <b>{{ action.createdAt }}</b></span>
                             <span>Last update on: <b>{{ action.updatedAt }}</b></span>
                         </li>

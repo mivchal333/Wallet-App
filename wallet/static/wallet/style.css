@@ -74,11 +74,11 @@
     float: right;
 }
 
-.income-amount-home {
+.income-amount-home, li.action-timeline-item > a {
     color: green;
 }
 
-.expense-amount-home {
+.expense-amount-home, li.action-timeline-item.expense-item > a.float-right {
     color: red;
 }
 
@@ -142,4 +142,13 @@ ul.timeline > li:before {
 .wallet-name {
     color: #007bff;
 
+}
+
+.timeline-limit-picker {
+    position: fixed;
+    right: 20px;
+}
+
+.timeline-limit-picker span {
+    margin-right: 5px;
 }
