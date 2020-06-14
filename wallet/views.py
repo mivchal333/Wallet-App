@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 from itertools import chain
 
 from django.core.exceptions import PermissionDenied
@@ -166,13 +166,13 @@ def walletTimeline(request, wallet_id):
         defaultLimit = 50
         limitParam = int(request.GET.get('limit', defaultLimit))
 
-        today_date = datetime.today().date()
+        today_date = datetime.datetime.now()
 
         incomes = Income.objects.filter(wallet=wallet_id, executionDate__isnull=False,
                                         executionDate__lte=today_date) \
                       .order_by('-createdAt')[:limitParam]
 
-        expenses = Expense.objects.filter(wallet=wallet_id, done=True, executionDate__isnull=False,
+        expenses = Expense.objects.filter(wallet=wallet_id, executionDate__isnull=False,
                                           executionDate__lte=today_date) \
                        .order_by('-createdAt')[:limitParam]
 
@@ -343,9 +343,8 @@ def expenseAdd(request, wallet_id):
                 amount = form.cleaned_data['amount']
                 execution_date = form.cleaned_data['executionDate']
                 category = form.cleaned_data['category']
-                done = form.cleaned_data['done']
                 new_expense = Expense(name=name, amount=amount, executionDate=execution_date, category=category,
-                                      wallet=wallet, done=done, user=request.user)
+                                      wallet=wallet, user=request.user)
                 updateWalletAmount(wallet_id, amount, WalletAction.SUBTRACT)
                 new_expense.save()
 
@@ -405,13 +404,11 @@ def updateExpense(request, expense_id):
                 amount = form.cleaned_data['amount']
                 execution_date = form.cleaned_data['executionDate']
                 category = form.cleaned_data['category']
-                done = form.cleaned_data['done']
 
                 expense.name = name
                 expense.amount = amount
                 expense.execution_date = execution_date
                 expense.category = category
-                expense.done = done
                 expense.save()
 
             return redirect('/wallet/expense/' + str(expense_id))

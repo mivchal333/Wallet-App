@@ -36,7 +36,6 @@ class Expense(models.Model):
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE)
-    done = models.BooleanField()
 
     def __str__(self):
         return self.name

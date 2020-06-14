@@ -17,8 +17,8 @@
                 <p>Shows only done operations</p>
                 <ul class="timeline">
                     {% for action in actionList %}
-                        <li class="action-timeline-item {% if action.done %}expense-item{% endif %}">
-                            <a href="/wallet/{% if action.done %}expense{% else %}income{% endif %}/{{ action.id }}"
+                        <li class="action-timeline-item {% if not action.source %}expense-item{% endif %}">
+                            <a href="/wallet/{% if not action.source %}expense{% else %}income{% endif %}/{{ action.id }}"
                                class="action-name">{{ action.name }}{{ action.source }}</a>
                             <a href="#" class="float-right">{{ action.amount }}</a>
                             {% if action.category %}

@@ -30,7 +30,7 @@ def getExpansesSumInThisMonth(user):
     today_date = datetime.today().date()
     first_day_of_month = today_date.replace(day=1)
 
-    expense_sum = Expense.objects.filter(user=user, done=True, createdAt__gte=first_day_of_month).aggregate(
+    expense_sum = Expense.objects.filter(user=user, createdAt__gte=first_day_of_month).aggregate(
         Sum('amount'))
 
     if expense_sum.get('amount__sum'):
@@ -55,7 +55,7 @@ def getExpansesSumInLastWeek(user):
     today_date = datetime.today().date()
     last_week_start_date = today_date - timedelta(days=7)
 
-    expense_sum = Expense.objects.filter(user=user, done=True, createdAt__gte=last_week_start_date).aggregate(
+    expense_sum = Expense.objects.filter(user=user, createdAt__gte=last_week_start_date).aggregate(
         Sum('amount'))
 
     if expense_sum.get('amount__sum'):

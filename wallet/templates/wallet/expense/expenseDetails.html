@@ -30,16 +30,6 @@
             <label class="details-field-name">Created by:</label>
             <p class="details-field-value"> {{ expense.user }}</p>
         </div>
-        <div class="form-group">
-            <label class="details-field-name">Done:</label>
-            <p class="details-field-value">
-                {% if expense.done %}
-                    Yes
-                {% else %}
-                    No
-                {% endif %}
-            </p>
-        </div>
         <a href="/wallet/expense/{{ expense.id }}/update" class="btn btn-warning button-right-flow"
            role="button" aria-pressed="true">Edit</a>
         <a href="/wallet/expense/{{ expense.id }}/delete" class="btn btn-danger button-right-flow active"
