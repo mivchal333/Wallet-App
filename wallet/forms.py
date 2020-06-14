@@ -8,10 +8,10 @@ from wallet.models import Category, Wallet, Income, Expense
 class WalletForm(forms.ModelForm):
     class Meta:
         model = Wallet
-        fields = ['name', 'amount']
+        fields = ['name', 'description']
         widgets = {
             'name': TextInput(attrs={'class': "form-control"}),
-            'amount': forms.NumberInput(attrs={'class': "form-control"})
+            'description': TextInput(attrs={'class': "form-control"}),
         }
 
 

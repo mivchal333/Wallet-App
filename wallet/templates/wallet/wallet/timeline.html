@@ -21,6 +21,9 @@
                             <a href="/wallet/{% if action.done %}expense{% else %}income{% endif %}/{{ action.id }}"
                                class="action-name">{{ action.name }}{{ action.source }}</a>
                             <a href="#" class="float-right">{{ action.amount }}</a>
+                            {% if action.category %}
+                                <span>Category: <b>{{ action.category }}</b></span>
+                            {% endif %}
                             <span>Executed on: <b>{{ action.executionDate }}</b></span>
                             <span>Created on: <b>{{ action.createdAt }}</b></span>
                             <span>Last update on: <b>{{ action.updatedAt }}</b></span>

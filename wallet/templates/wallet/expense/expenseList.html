@@ -88,10 +88,10 @@
                 <tr>
                     <td>{{ expense.createdAt | date:"M d, Y"}}</td>
                     <td>{{ expense.name }}</td>
-                    <td>${{expense.amount }}</td>
+                    <td>${{ expense.amount }}</td>
                     <td>{{ expense.category.name }}</td>
                     <td>{{ expense.wallet.name }}</td>
-                    <td><a href="/wallet/income/{{ expense.id }}" class="btn-sm btn-primary">See details</a></td>
+                    <td><a href="/wallet/expense/{{ expense.id }}" class="btn-sm btn-primary">See details</a></td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -102,4 +102,5 @@
             </tr>
         </tfoot>
     </table>
+
 {% endblock content %}

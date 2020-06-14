@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from enum import Enum
 
 from django.db.models import Sum
 
@@ -63,16 +64,21 @@ def getExpansesSumInLastWeek(user):
         return 0
 
 
-def updateWalletAmount(wallet_id, amount, action_type):
+def updateWalletAmount(wallet_id, updateValue, action_type):
     wallet = Wallet.objects.get(pk=wallet_id)
 
     today__date = datetime.now()
     wallet.updatedAt = today__date
-    old_amount = wallet.amount
-    if action_type == 'add':
-        new_amount = float(old_amount) + float(amount)
-    else:
-        new_amount = float(old_amount) - float(amount)
+    amount = wallet.amount
+    if action_type == WalletAction.ADD:
+        amount = float(amount) + float(updateValue)
+    elif action_type == WalletAction.SUBTRACT:
+        amount = float(amount) - float(updateValue)
 
-    wallet.amount = new_amount
+    wallet.amount = amount
     wallet.save()
+
+
+class WalletAction(Enum):
+    ADD = 1
+    SUBTRACT = 2

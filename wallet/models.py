@@ -18,6 +18,7 @@ class Category(models.Model):
 class Wallet(models.Model):
     name = models.CharField(max_length=20)
     amount = models.FloatField(default='0')
+    description = models.CharField(max_length=255, default='')
     createdAt = models.DateTimeField(auto_now_add=True)
     updatedAt = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, models.SET_NULL, related_name='wallets', null=True, blank=True)

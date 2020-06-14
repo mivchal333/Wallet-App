@@ -1,7 +1,8 @@
 from datetime import datetime
 from itertools import chain
 
-from django.http import Http404, HttpResponseForbidden
+from django.core.exceptions import PermissionDenied
+from django.http import Http404
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
@@ -9,7 +10,15 @@ from .forms import IncomeForm, ExpenseForm, CategoryForm
 from .forms import WalletForm
 from .models import Wallet, Income, Expense, Category
 from .service import getIncomesSumInThisMonth, getExpansesSumInThisMonth, updateWalletAmount, getExpansesSumInLastWeek, \
-    getIncomesSumInLastWeek
+    getIncomesSumInLastWeek, WalletAction
+
+
+# Contact
+
+def contact(request):
+    context = {}
+    context['api_key'] = 'AIzaSyAN-F4MEa1DFERJwgxQmI5VcX4OgMlHFd0'
+    return render(request, 'wallet/about.html', context)
 
 
 # Home
@@ -44,6 +53,8 @@ def walletDetails(request, wallet_id):
     if request.user.is_authenticated:
         try:
             wallet = Wallet.objects.get(pk=wallet_id)
+            if wallet.user != request.user:
+                raise PermissionDenied
         except Wallet.DoesNotExist:
             raise Http404("Wallet does not exist")
         last_incomes = Income.objects.filter(wallet=wallet_id).order_by('-createdAt')[:5]
@@ -75,8 +86,8 @@ def addWallet(request):
             # check whether it's valid:
             if form.is_valid():
                 name = form.cleaned_data['name']
-                amount = form.cleaned_data['amount']
-                new_wallet = Wallet(name=name, amount=amount)
+                description = form.cleaned_data['description']
+                new_wallet = Wallet(name=name, description=description)
                 new_wallet.save()
                 request.user.wallets.add(new_wallet)
 
@@ -105,28 +116,42 @@ def walletList(request):
 
 def deleteWallet(request, wallet_id):
     if request.user.is_authenticated:
-        Wallet.objects.get(pk=wallet_id).delete()
+        try:
+            wallet = Wallet.objects.get(pk=wallet_id)
+        except Wallet.DoesNotExist:
+            raise Http404("Wallet does not exist")
+        if wallet.user != request.user:
+            raise PermissionDenied
+        wallet.delete()
         return walletList(request)
+
     else:
-        raise Http404("Wallet does not exist")
+        return redirect("/login")
 
 
 def updateWallet(request, wallet_id):
     if request.user.is_authenticated:
-        wallet = Wallet.objects.get(pk=wallet_id)
+        try:
+            wallet = Wallet.objects.get(pk=wallet_id)
+        except Wallet.DoesNotExist:
+            raise Http404("Wallet does not exist")
+        if wallet.user != request.user:
+            raise PermissionDenied
         form = WalletForm(request.POST)
         if request.method == 'POST':
             if form.is_valid():
                 name = form.cleaned_data['name']
-                amount = form.cleaned_data['amount']
+                description = form.cleaned_data['description']
                 wallet.name = name
-                wallet.amount = amount
+                wallet.description = description
                 wallet.save()
             return redirect("/wallet/" + str(wallet_id))
         else:
             form = WalletForm(instance=wallet)
 
         return render(request, 'wallet/wallet/walletForm.html', {'form': form})
+    else:
+        return redirect("/login")
 
 
 def walletTimeline(request, wallet_id):
@@ -135,6 +160,8 @@ def walletTimeline(request, wallet_id):
             wallet = Wallet.objects.get(pk=wallet_id)
         except Wallet.DoesNotExist:
             raise Http404("Wallet does not exist")
+        if wallet.user != request.user:
+            raise PermissionDenied
 
         defaultLimit = 50
         limitParam = int(request.GET.get('limit', defaultLimit))
@@ -172,6 +199,8 @@ def incomeDetails(request, income_id):
             income = Income.objects.get(pk=income_id)
         except Income.DoesNotExist:
             raise Http404("Income does not exist")
+        if income.user != request.user:
+            raise PermissionDenied
         context = {'income': income}
         return render(request, 'wallet/income/incomeDetails.html', context)
     else:
@@ -183,6 +212,8 @@ def incomeAdd(request, wallet_id):
 
         # if this is a POST request we need to process the form data
         wallet = Wallet.objects.get(pk=wallet_id)
+        if wallet.user != request.user:
+            raise PermissionDenied
         if request.method == 'POST':
             # create a form instance and populate it with data from the request:
             form = IncomeForm(request.POST, user=request.user)
@@ -197,7 +228,7 @@ def incomeAdd(request, wallet_id):
                 new_income = Income(source=source, amount=amount, executionDate=executionDate, category=category,
                                     wallet=wallet,
                                     user=request.user)
-                updateWalletAmount(wallet_id, amount, 'add')
+                updateWalletAmount(wallet_id, amount, WalletAction.ADD)
                 new_income.save()
 
                 return HttpResponseRedirect('/wallet/income/' + str(new_income.id))
@@ -235,19 +266,28 @@ def incomeList(request):
 
 def deleteIncome(request, income_id):
     if request.user.is_authenticated:
-
-        income = Income.objects.get(pk=income_id)
-        updateWalletAmount(income.wallet_id, income.amount, 'subtract')
+        try:
+            income = Income.objects.get(pk=income_id)
+        except Income.DoesNotExist:
+            raise Http404("Income does not exist")
+        if income.user != request.user:
+            raise PermissionDenied
+        updateWalletAmount(income.wallet_id, income.amount, WalletAction.SUBTRACT)
         income.delete()
         return incomeList(request)
     else:
-        raise Http404("Income does not exist")
+        raise PermissionDenied
 
 
 def updateIncome(request, income_id):
     if request.user.is_authenticated:
-        income = Income.objects.get(pk=income_id)
+        try:
+            income = Income.objects.get(pk=income_id)
+        except Income.DoesNotExist:
+            raise Http404("Income does not exist")
 
+        if income.user != request.user:
+            raise PermissionDenied
         form = IncomeForm(request.POST, user=request.user)
         if request.method == 'POST':
             if form.is_valid():
@@ -267,6 +307,8 @@ def updateIncome(request, income_id):
             form = IncomeForm(instance=income, user=request.user)
 
         return render(request, 'wallet/income/incomeForm.html', {'form': form, 'wallet': income.wallet})
+    else:
+        return redirect("/login")
 
 
 # Expense
@@ -276,6 +318,8 @@ def expenseDetails(request, expense_id):
             expense = Expense.objects.get(pk=expense_id)
         except Expense.DoesNotExist:
             raise Http404("expense does not exist")
+        if expense.user != request.user:
+            raise PermissionDenied
         context = {'expense': expense}
         return render(request, 'wallet/expense/expenseDetails.html', context)
     else:
@@ -286,9 +330,10 @@ def expenseAdd(request, wallet_id):
     if request.user.is_authenticated:
         try:
             wallet = Wallet.objects.get(pk=wallet_id, user=request.user)
-        except Expense.DoesNotExist:
+        except Wallet.DoesNotExist:
             raise Http404("Wallet does not exist")
-
+        if wallet.user != request.user:
+            raise PermissionDenied
         if request.method == 'POST':
             form = ExpenseForm(request.POST, user=request.user)
             if form.is_valid():
@@ -301,7 +346,7 @@ def expenseAdd(request, wallet_id):
                 done = form.cleaned_data['done']
                 new_expense = Expense(name=name, amount=amount, executionDate=execution_date, category=category,
                                       wallet=wallet, done=done, user=request.user)
-                updateWalletAmount(wallet_id, amount, 'subtract')
+                updateWalletAmount(wallet_id, amount, WalletAction.SUBTRACT)
                 new_expense.save()
 
                 return HttpResponseRedirect('/wallet/expense/' + str(new_expense.id))
@@ -330,18 +375,29 @@ def expenseList(request):
 
 def deleteExpense(request, expense_id):
     if request.user.is_authenticated:
-        expense = Expense.objects.get(pk=expense_id)
-        updateWalletAmount(expense.wallet_id, expense.amount, 'add')
+        try:
+            expense = Expense.objects.get(pk=expense_id)
+        except Expense.DoesNotExist:
+            raise Http404("Expense does not exist")
+
+        if expense.user != request.user:
+            raise PermissionDenied
+        updateWalletAmount(expense.wallet_id, expense.amount, WalletAction.ADD)
         expense.delete()
         return expenseList(request)
     else:
-        raise Http404("Expense does not exist")
+        return redirect("/login")
 
 
 def updateExpense(request, expense_id):
     if request.user.is_authenticated:
-        expense = Expense.objects.get(pk=expense_id)
+        try:
+            expense = Expense.objects.get(pk=expense_id)
+        except:
+            raise Http404("Expense does not exist")
 
+        if expense.user != request.user:
+            raise PermissionDenied
         form = ExpenseForm(request.POST, user=request.user)
         if request.method == 'POST':
             if form.is_valid():
@@ -363,6 +419,8 @@ def updateExpense(request, expense_id):
             form = ExpenseForm(instance=expense, user=request.user)
 
         return render(request, 'wallet/expense/expenseForm.html', {'form': form, 'wallet': expense.wallet})
+    else:
+        return redirect("/login")
 
 
 # Category
@@ -373,6 +431,8 @@ def categoryDetails(request, category_id):
             category = Category.objects.get(pk=category_id)
         except Category.DoesNotExist:
             raise Http404("category does not exist")
+        if category.user != request.user:
+            raise PermissionDenied
         context = {'category': category}
         return render(request, 'wallet/category/categoryDetails.html', context)
     else:
@@ -413,20 +473,28 @@ def categoryList(request):
 
 def deleteCategory(request, category_id):
     if request.user.is_authenticated:
-        category = Category.objects.get(pk=category_id)
+        try:
+            category = Category.objects.get(pk=category_id)
+        except Category.DoesNotExist:
+            raise Http404("category does not exist")
+
         if category.user == request.user:
             category.delete()
         else:
-            raise HttpResponseForbidden("Permission denied")
+            raise PermissionDenied
         return categoryList(request)
     else:
-        raise Http404("Category does not exist")
+        return redirect("/login")
 
 
 def updateCategory(request, category_id):
     if request.user.is_authenticated:
-        category = Category.objects.get(pk=category_id)
-
+        try:
+            category = Category.objects.get(pk=category_id)
+        except:
+            raise Http404("category does not exist")
+        if category.user != request.user:
+            raise PermissionDenied
         form = CategoryForm(request.POST)
         if request.method == 'POST':
             if form.is_valid():
@@ -441,3 +509,5 @@ def updateCategory(request, category_id):
             form = CategoryForm(instance=category)
 
         return render(request, 'wallet/expense/expenseForm.html', {'form': form})
+    else:
+        return redirect("/login")
