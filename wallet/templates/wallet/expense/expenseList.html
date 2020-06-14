@@ -72,7 +72,7 @@
     </br>
     </br>
 
-        <table id="table_expense" class="ui celled table">
+        <table id="table_expense"  class="table table-striped table-bordered" style="width:100%">
             <thead>
                 <tr>
                     <th>Date</th>
@@ -94,7 +94,8 @@
                     <td><a href="/wallet/income/{{ expense.id }}" class="btn-sm btn-primary">See details</a></td>
                 </tr>
             {% endfor %}
-            </tbody>            <tfoot>
+            </tbody>
+            <tfoot>
             <tr>
                 <th colspan="4" style="text-align:right">Total amount:</th>
                 <th colspan="2"></th>
