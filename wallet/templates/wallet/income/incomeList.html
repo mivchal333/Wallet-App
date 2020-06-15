@@ -90,7 +90,7 @@
         <tbody>
         {% for income in incomeList %}
             <tr>
-                <td >{{income.createdAt| date:"M d, Y"}}</td>
+                <td >{{income.executionDate | date:"M d, Y"}}</td>
                 <td>{{ income.source }}</td>
                 <td>${{ income.amount }}</td>
                 <td>{{ income.category.name }}</td>
