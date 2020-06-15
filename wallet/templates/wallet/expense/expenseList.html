@@ -92,7 +92,7 @@
             <tbody>
             {% for expense in expenseList %}
                 <tr>
-                    <td>{{ expense.createdAt | date:"M d, Y"}}</td>
+                    <td>{{ expense.executionDate | date:"M d, Y"}}</td>
                     <td>{{ expense.name }}</td>
                     <td>${{ expense.amount }}</td>
                     <td>{{ expense.category.name }}</td>
