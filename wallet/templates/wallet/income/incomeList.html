@@ -5,8 +5,24 @@
     <script>
     $(document).ready(function() {
         $('.input-daterange input').each(function() {
-        $(this).datepicker('clearDates');
+            $(this).datepicker('clearDates');
+             $("#min-date").datepicker('setStartDate');
+             $("#max-date").datepicker('setEndDate');
     });
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+                var min = $('#min-date').datepicker("getDate");
+                var max = $('#max-date').datepicker("getDate");
+                var startDate = new Date(data[0]);
+                if (min == null && max == null) { return true; }
+                if (min == null && startDate <= max) { return true;}
+                if(max == null && startDate >= min) {return true;}
+                if (startDate <= max && startDate >= min) { return true; }
+                return false;
+            }
+            );
+        $("#min-date").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+        $("#max-date").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
         // DataTable
         var oTable = $('#table_incomes').DataTable({
             "footerCallback": function (row, data, start, end, display) {
@@ -38,19 +54,9 @@
                 );
             },
         });
-        // Extend dataTables search
-        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-            var min = $('#min-date').datepicker('getDate');
-            var max = $('#max-date').datepicker('getDate');
-            var createdAt = data[0] || 0; // Our date column in the table
-            if ((min == "" || max == "") || (moment(createdAt).isSameOrAfter(min) && moment(createdAt).isSameOrBefore(max))){
-                return true;
-            }
-        return false;
-        });
-        // Re-draw the table when the a date range filter changes
-        $('.date-range-filter').change(function() {
-            $('#table_incomes').DataTable().draw();
+
+        $('#min-date, #max-date').change(function() {
+            oTable.draw();
         });
     });
     </script>
@@ -84,7 +90,7 @@
         <tbody>
         {% for income in incomeList %}
             <tr>
-                <td >{{income.createdAt| date:"M d, Y"}}</td>
+                <td >{{income.executionDate | date:"M d, Y"}}</td>
                 <td>{{ income.source }}</td>
                 <td>${{ income.amount }}</td>
                 <td>{{ income.category.name }}</td>
