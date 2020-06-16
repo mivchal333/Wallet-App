@@ -169,16 +169,15 @@ def walletTimeline(request, wallet_id):
         today_date = datetime.datetime.now()
 
         incomes = Income.objects.filter(wallet=wallet_id, executionDate__isnull=False,
-                                        executionDate__lte=today_date) \
-                      .order_by('-createdAt')[:limitParam]
+                                        executionDate__lte=today_date).order_by('-executionDate')[:limitParam]
 
         expenses = Expense.objects.filter(wallet=wallet_id, executionDate__isnull=False,
-                                          executionDate__lte=today_date) \
-                       .order_by('-createdAt')[:limitParam]
+                                          executionDate__lte=today_date).order_by('-executionDate')[:limitParam]
 
         action_list = sorted(
             chain(incomes, expenses),
-            key=lambda instance: instance.createdAt
+            key=lambda instance: instance.executionDate,
+            reverse=True
         )[:limitParam]
 
         context = {
@@ -407,7 +406,7 @@ def updateExpense(request, expense_id):
 
                 expense.name = name
                 expense.amount = amount
-                expense.execution_date = execution_date
+                expense.executionDate = execution_date
                 expense.category = category
                 expense.save()
 
