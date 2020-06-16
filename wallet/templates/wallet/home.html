@@ -66,24 +66,6 @@
         <h1>Hello, {{ user.get_username }}</h1>
         <h2>What you want to do today?</h2>
         {% if wallet_list %}
-            <div class="wrapper">
-                <div class="info">
-                    <h3>This month: </h3>
-                    <h4>
-                        <span class="action-home-wrapper">
-                            Earn:
-                            <b class="income-amount-home">{{ income_sum_month }}</b>
-                        </span>
-                        <span class="action-home-wrapper">
-                            Spend:
-                            <b class="expense-amount-home">{{ expense_sum_month }}</b>
-                        </span>
-                    </h4>
-                </div>
-                <div class="chart">
-                    <canvas id="homeMonthlyChart"></canvas>
-                </div>
-            </div>
             <br/>
             <div class="wrapper">
                 <div class="info">
@@ -104,6 +86,24 @@
                 </div>
             </div>
             <br/>
+            <div class="wrapper">
+                <div class="info">
+                    <h3>This month: </h3>
+                    <h4>
+                        <span class="action-home-wrapper">
+                            Earn:
+                            <b class="income-amount-home">{{ income_sum_month }}</b>
+                        </span>
+                        <span class="action-home-wrapper">
+                            Spend:
+                            <b class="expense-amount-home">{{ expense_sum_month }}</b>
+                        </span>
+                    </h4>
+                </div>
+                <div class="chart">
+                    <canvas id="homeMonthlyChart"></canvas>
+                </div>
+            </div>
         {% else %}
             <br/>
             <h5>You don't have any wallet, please add one</h5>
