@@ -1,0 +1,160 @@
+.container {
+    margin-top: 30px;
+}
+
+.wallet-list-wrapper, .income-list-wrapper, .expense-list-wrapper, .category-list-wrapper {
+    max-width: 50%;
+}
+
+.wallet-add-wrapper input, select, .category-add-wrapper {
+    max-width: 300px;
+}
+
+.income-amount {
+    float: right;
+    color: green;
+}
+
+.expense-amount {
+    float: right;
+    color: red;
+}
+
+.button-right-flow {
+    float: right;
+    margin: 0 2px 0 2px;
+}
+
+.income-card, .expense-card, .category-card {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.details-body {
+    width: 60%;
+}
+
+.details-body .details-field-name {
+    margin-right: 40px;
+}
+
+.details-body .details-field-value {
+    float: right;
+}
+
+.details-body .details-field-value {
+    font-size: large;
+}
+
+.add-action-right-btn {
+    display: inline-block;
+    float: right;
+}
+
+.wrapper {
+    overflow: hidden; /* add this to contain floated children */
+}
+
+.info {
+    width: 40%;
+    float: left; /* add this */
+
+}
+
+.chart {
+    width: 60%;
+    float: left; /* add this */
+}
+
+.list-group-item-action a {
+    margin-right: 15px;
+}
+
+.list-group-item-action span {
+    float: right;
+}
+
+.income-amount-home, li.action-timeline-item > a {
+    color: green;
+}
+
+.expense-amount-home, li.action-timeline-item.expense-item > a.float-right {
+    color: red;
+}
+
+.action-home-wrapper {
+    display: block;
+    margin-left: 150px;
+}
+
+.category-add-wrapper input#id_priority {
+    max-width: 70px;
+}
+
+.header-action-section a {
+    margin: 5px 5px 5px 5px;
+}
+
+ul.timeline {
+    list-style-type: none;
+    position: relative;
+}
+
+ul.timeline:before {
+    content: ' ';
+    background: #d4d9df;
+    display: inline-block;
+    position: absolute;
+    left: 29px;
+    width: 2px;
+    height: 100%;
+    z-index: 400;
+}
+
+ul.timeline > li {
+    margin: 20px 0;
+    padding-left: 20px;
+}
+
+ul.timeline > li:before {
+    content: ' ';
+    background: white;
+    display: inline-block;
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid #22c0e8;
+    left: 20px;
+    width: 20px;
+    height: 20px;
+    z-index: 400;
+}
+
+.action-timeline-item span {
+    display: block;
+}
+
+.action-timeline-item .action-name {
+    display: inline-block;
+    color: #007bff;
+    font-size: 1.3em;
+}
+
+.wallet-name {
+    color: #007bff;
+
+}
+
+.timeline-limit-picker {
+    float: right;
+}
+
+.timeline-limit-picker span {
+    margin-right: 5px;
+}
+
+.map-iframe {
+    margin: 20px 0 20px 0;
+    -webkit-box-shadow: 0px 0px 4px 2px rgba(110, 110, 110, 1);
+    -moz-box-shadow: 0px 0px 4px 2px rgba(110, 110, 110, 1);
+    box-shadow: 0px 0px 4px 2px rgba(110, 110, 110, 1);
+}
