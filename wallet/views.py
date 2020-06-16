@@ -406,10 +406,9 @@ def updateExpense(request, expense_id):
                 execution_date = form.cleaned_data['executionDate']
                 category = form.cleaned_data['category']
 
-                print(execution_date)
                 expense.name = name
                 expense.amount = amount
-                expense.execution_date = execution_date
+                expense.executionDate = execution_date
                 expense.category = category
                 expense.save()
 
