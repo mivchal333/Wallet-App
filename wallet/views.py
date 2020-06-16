@@ -169,12 +169,10 @@ def walletTimeline(request, wallet_id):
         today_date = datetime.datetime.now()
 
         incomes = Income.objects.filter(wallet=wallet_id, executionDate__isnull=False,
-                                        executionDate__lte=today_date) \
-                      .order_by('-executionDate')[:limitParam]
+                                        executionDate__lte=today_date).order_by('-executionDate')[:limitParam]
 
         expenses = Expense.objects.filter(wallet=wallet_id, executionDate__isnull=False,
-                                          executionDate__lte=today_date) \
-                       .order_by('-executionDate')[:limitParam]
+                                          executionDate__lte=today_date).order_by('-executionDate')[:limitParam]
 
         action_list = sorted(
             chain(incomes, expenses),
