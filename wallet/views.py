@@ -178,7 +178,8 @@ def walletTimeline(request, wallet_id):
 
         action_list = sorted(
             chain(incomes, expenses),
-            key=lambda instance: instance.executionDate
+            key=lambda instance: instance.executionDate,
+            reverse=True
         )[:limitParam]
 
         context = {
